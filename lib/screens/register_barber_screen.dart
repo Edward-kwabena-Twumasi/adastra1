@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thecut/providers/provider.dart';
-import 'package:thecut/screens/newbarber/barber_main_screen.dart';
+import 'package:thecut/screens/updated_screens/newbarber/barber_main_screen.dart';
 
 // import 'client_screen_with_drawer.dart';
 

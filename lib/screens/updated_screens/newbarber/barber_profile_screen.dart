@@ -4,6 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:thecut/providers/provider.dart';
 
+import '../../../sign_in_option_screen.dart';
+
 class BarberAboutScreen extends StatefulWidget {
   const BarberAboutScreen({ Key? key }) : super(key: key);
 
@@ -26,128 +28,142 @@ class _BarberAboutScreenState extends State<BarberAboutScreen> {
       body: Stack(
         children: [
         
-           Align(
-             alignment:Alignment.bottomCenter,
-             child: Container(
-          height:MediaQuery.of(context).size.height*0.7-120,
-          color: Colors.white,
-          child: BarberHome()
-           
-          )
-           ),
-     
-      
-          Align(
-           alignment: Alignment.topCenter,
-            child: SizedBox(
-              
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height*0.3,
-              child: Card(
-                shape:RoundedRectangleBorder(
-                  borderRadius:BorderRadius.circular(15)
-                ),
-                child: Column(
-
-                  children: [
-                     Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Container(
-                        padding: EdgeInsets.zero,
-                        height: 90,
-                        width:90,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                           
-                            width: 3
-                          ),
-                          image: DecorationImage(image: AssetImage("images/salon.jpg"))
-                        ),
-                       
-                      ),
-                    )
-                    ,
-                     FutureBuilder(
-                                
-                                future: barber,
-                                builder:
-                                  (BuildContext,
-                                      AsyncSnapshot<DocumentSnapshot<Object?>>
-                                          snapshot) {
-                                            if (snapshot.connectionState==ConnectionState.waiting) {
-                                               return Center(
-              child: CircularProgressIndicator(
-                color: Colors.transparent,
-              )
-          );
-                                            }
-                                          else  if (snapshot.hasError) {
-          return Material(
-            child: Center(
-              child: Text('Oops,an error occured'),
-            ),
-          );
-        }
-                                return Text(snapshot.data!["name"],
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                ),);
-                              }),
-                    Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Card(
+           Column(
+             children: [
+                Container(
+                   height:MediaQuery.of(context).size.height*0.15,
+                   width:MediaQuery.of(context).size.width,
+                   decoration:BoxDecoration(
+            image: DecorationImage(image: AssetImage("images/nicesalon.jpg", ),fit:BoxFit.cover )
+                   )
+               ),
+               Align(
+                 alignment: Alignment.bottomCenter,
+                 child: Container(
+                             height:MediaQuery.of(context).size.height*0.72,
+                     color: Colors.white,
+                     child: ListView(
+                       physics:NeverScrollableScrollPhysics(),
+                       shrinkWrap:true,
+                           children: [
+                             SizedBox(
+                  height: 40,
+                             ),
+                          FutureBuilder(
+                                  
+                                  future: barber,
+                                  builder:
+                                    (BuildContext,
+                                        AsyncSnapshot<DocumentSnapshot<Object?>>
+                                            snapshot) {
+                                              if (snapshot.connectionState==ConnectionState.waiting) {
+                                                 return Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.transparent,
+                  )
+                       );
+                                              }
+                                            else  if (snapshot.hasError) {
+                       return Material(
+                           child: Center(
+                  child: Text('Oops,an error occured'),
+                           ),
+                       );
+                     }
+                                  return ListTile(
+                                    title: Center(
+                                      child: Text(snapshot.data!["name"],
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                      ),),
+                                    ),
+                                    subtitle: Center(child: Text("Phone . "+snapshot.data!["phone"])),
+                                  );
+                                }),
+                                Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Card(
                                     elevation: 5,
-                                    color:Colors.lightBlue[50],
+                                    color:Colors.grey.shade50,
                                     shape:RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)
+                                      borderRadius: BorderRadius.circular(30)
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
+                                      padding: const EdgeInsets.all(2.0),
                                       child: IconButton(onPressed: (){}, icon: Icon(Icons.phone)),
                                     ),
                                   ),
-                                ),
-
-                                 Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Card(
-                                    elevation: 5,
-                                    color:Colors.lightBlue[50],
-                                    shape:RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: IconButton(onPressed: (){}, icon: Icon(Icons.place)),
-                                    ),
-                                  ),
-                                ),
-
-                                 Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Card(
-                                    elevation: 5,
-                                    color:Colors.lightBlue[50],
-                                    shape:RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: IconButton(onPressed: (){}, icon: FaIcon(FontAwesomeIcons.heart)),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                  ],
+                          
+                                   Card(
+                                     elevation: 5,
+                                     color:Colors.grey.shade50,
+                                     shape:RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.circular(30)
+                                     ),
+                                     child: Padding(
+                                       padding: const EdgeInsets.all(2.0),
+                                       child: IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
+                                     ),
+                                   ),
+                          
+                                   Card(
+                                     elevation: 5,
+                                     color:Colors.grey.shade50,
+                                     shape:RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.circular(30)
+                                     ),
+                                     child: Padding(
+                                       padding: const EdgeInsets.all(2.0),
+                                       child: IconButton(onPressed: (){
+                                         Provider.of<ApplicationProvider>(context,
+                                            listen: false)
+                                        .signOut();
+                                    Navigator.pushAndRemoveUntil(context,
+                                        MaterialPageRoute(builder: (builder) {
+                                      return SignInOptionScreen();
+                                    }), (route) => false);
+                                       }, icon: FaIcon(FontAwesomeIcons.signOutAlt)),
+                                     ),
+                                   ),
+                                ],
+                              ),
+                             SizedBox(
+                  height: 600,child: BarberHome()),
+                           ],
+                     )
+                 
+                     ),
+               ),
+             ],
+           ),
+     
+      Align(
+            alignment:Alignment.topCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height*0.15-40
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Container(
+                    decoration:BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color:Colors.green,
+                    ),
+                    child: SizedBox(
+                      height: 80,
+                      width:80,
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage("images/nicesalon.jpg") ,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
          

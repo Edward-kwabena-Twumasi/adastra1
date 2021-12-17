@@ -20,16 +20,8 @@ class _BarberMainScreenState extends State<BarberMainScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.arrow_back)),
-          ),
+       
+         
           bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.shifting,
               backgroundColor: Colors.white,
@@ -47,7 +39,7 @@ class _BarberMainScreenState extends State<BarberMainScreen> {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.info_outline), label: "General"),
               ]),
-          body: SafeArea(child: pages.elementAt(index))),
+          body: pages.elementAt(index)),
     );
   }
 }

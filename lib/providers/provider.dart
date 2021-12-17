@@ -16,6 +16,7 @@ class ApplicationProvider extends ChangeNotifier {
   String shopId = "0245382714";
   Map<String, dynamic> shopDetails = {};
   SharedPreferences? _preferences;
+  bool isLoading = true;
 
   final StreamController<String?> _authController = StreamController<String?>();
   Sink<String?> get _addUser => _authController.sink;
@@ -52,6 +53,8 @@ class ApplicationProvider extends ChangeNotifier {
     await _initializePrefs();
     //id to fettch shop details and display to user
     String shopId = '';
+    //set is loading bool value for the shimmmer loading
+    bool isLoading = true;
     String tempPhone = _preferences?.getString('phone_number') ?? 'NULL';
     phoneNumber = tempPhone != 'NULL' ? tempPhone : null;
     print("LOADING PREFS");
@@ -59,6 +62,7 @@ class ApplicationProvider extends ChangeNotifier {
     print(phoneNumber);
     notifyListeners();
   }
+
 //set shopid
   setShopId(String phone) {
     shopId = phone;
@@ -114,16 +118,15 @@ class ApplicationProvider extends ChangeNotifier {
     return await FirebaseFirestore.instance
         .collection("shops")
         .doc(phoneNumber)
-        .get()
-        ;
+        .get();
   }
+
   //Lets get shop document with phone this time with a query snapshot
   Future<DocumentSnapshot<Map<String, dynamic>>> getBarber() async {
     return await FirebaseFirestore.instance
         .collection("barbers")
         .doc(phoneNumber)
-        .get()
-        ;
+        .get();
   }
 
 //Lets get shop document with phone this time with a query snapshot

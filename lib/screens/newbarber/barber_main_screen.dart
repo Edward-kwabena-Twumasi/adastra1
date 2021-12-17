@@ -43,33 +43,7 @@ class _BarberMainScreenState extends State<BarberMainScreen> {
                   subtitle: Center(child: Column(
                     children: [
                       Text("Barber at best street salon"),
-                      Container(
-                              height: 20,
-                              child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.star_border,
-                                        color: Colors.yellow)),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.star_border,
-                                        color: Colors.yellow)),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.star_border,
-                                        color: Colors.yellow)),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.star_border,
-                                       )),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.star_border,
-                                        )),
-                              ]),
-  )
+                      
                     ],
                   )),
                   isThreeLine: true,
@@ -89,11 +63,9 @@ class _BarberMainScreenState extends State<BarberMainScreen> {
                   ]
                 )
               ),
-              SizedBox(
-                height: 600,
-                child:BarberHome()
-              )
-
+           
+             
+ 
             ]
       ),
       )

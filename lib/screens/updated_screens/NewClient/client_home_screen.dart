@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //declase isloading
-  bool isLoading = false;
+  late bool isLoading = false;
   late Timer _timer;
   int _start = 2;
 
@@ -33,8 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     setState(() {
-      client =
-          Provider.of<ApplicationProvider>(context, listen: false).clientName;
+      isLoading =
+          Provider.of<ApplicationProvider>(context, listen: false).isLoading;
+      print(isLoading);
+    });
+    Provider.of<ApplicationProvider>(context, listen: false)
+        .getUser()
+        .then((value) {
+      setState(() {
+        client = value.data()!["name"];
+      });
     });
 
     startTimer();
@@ -46,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
- 
   //A stack is used to create the aligning effect and overlaying
   @override
   Widget build(BuildContext context) {
@@ -83,15 +90,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 3,
                         ),
                         SizedBox(
-                          height: 95,
-                          child: ListView(
-                            scrollDirection:Axis.horizontal,
-                            children: [
-Categories(icon: Icons.cut),
-Categories(icon: FontAwesomeIcons.female)
-                            ],
-                          )
-                        ),
+                            height: 95,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Categories(icon: Icons.cut),
+                                Categories(icon: FontAwesomeIcons.female)
+                              ],
+                            )),
                         //best shops
                         SizedBox(
                           height: 10,
@@ -131,6 +137,10 @@ Categories(icon: FontAwesomeIcons.female)
                                       child: Text('Oops,an error occured'),
                                     ),
                                   );
+                                } else if (snapshots.hasData) {
+                                  // Provider.of<ApplicationProvider>(context,
+                                  //         listen: false)
+                                  //     .isLoading = false;
                                 }
                                 return snapshots.data!.size < 1
                                     ? Center(child: Text("No shops yet!"))
@@ -283,16 +293,31 @@ Categories(icon: FontAwesomeIcons.female)
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              color: Colors.white.withOpacity(0.4)),
-                          child: Text("Hi " + client + ",You are welcome",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22)),
-                        ),
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                color: Colors.white.withOpacity(0.4)),
+                            child: RichText(
+                                text: TextSpan(children: [
+                              TextSpan(
+                                  text: "Hi ",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
+                              TextSpan(
+                                  text: client,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22)),
+                              TextSpan(
+                                  text: ",You are welcome",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20))
+                            ]))),
                       ],
                     ),
                   ),
@@ -334,21 +359,19 @@ class ClipPathClass extends CustomClipper<Path> {
 
 //tags model class
 class Categories extends StatelessWidget {
-  const Categories({ Key? key,required this.icon}) : super(key: key);
-final IconData icon;
+  const Categories({Key? key, required this.icon}) : super(key: key);
+  final IconData icon;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: CircleAvatar(
-        radius:40,
+        radius: 40,
         backgroundColor: Colors.red.shade50,
         child: IconButton(
-          
-          onPressed: (){},
-          icon:Icon(icon),
+          onPressed: () {},
+          icon: Icon(icon),
           color: Colors.black,
-          
         ),
       ),
     );
@@ -366,71 +389,73 @@ class Salons {
 }
 
 Widget SalonCards(String image, String name, double rating, String description,
-    BuildContext context, bool isLoading) => SizedBox(
-      height: 81,
-      width: MediaQuery.of(context).size.width * 0.9,
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          children: [
-            Container(
-              height: 80,
-              width: 90,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(10),
+        BuildContext context, bool isLoading) =>
+    SizedBox(
+        height: 81,
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: Card(
+          elevation: 4,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            children: [
+              Container(
+                height: 80,
+                width: 90,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10),
 
-                // image: DecorationImage(
-                //     image: AssetImage(
-                //       image,
-                //     ),
-                //     fit: BoxFit.cover)
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  'https://flutter'
-                  '.dev/docs/cookbook/img-files/effects/split-check/Avatar1.jpg',
-                  fit: BoxFit.cover,
+                  // image: DecorationImage(
+                  //     image: AssetImage(
+                  //       image,
+                  //     ),
+                  //     fit: BoxFit.cover)
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    'https://flutter'
+                    '.dev/docs/cookbook/img-files/effects/split-check/Avatar1.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            isLoading
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(10),
+              isLoading
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                      ],
+                    )
+                  : Expanded(
+                      child: ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(name),
+                            Wrap(children: [
+                              Text(rating.toString(), textAlign: TextAlign.end),
+                              Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              )
+                            ]),
+                          ],
+                        ),
+                        subtitle: Text(description),
                       ),
-                    ],
-                  )
-                : Expanded(
-                    child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(name),
-                          Wrap(children: [
-                            Text(rating.toString(), textAlign: TextAlign.end),
-                            Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            )
-                          ]),
-                        ],
-                      ),
-                      subtitle: Text(description),
                     ),
-                  ),
-          ],
-        ),
-      ));
+            ],
+          ),
+        ));
 
 //shimmer loading class takes isloading boolean and a
 //child returns shimmer if is loading and the widget if done loading
