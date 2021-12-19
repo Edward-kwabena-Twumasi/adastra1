@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:thecut/screens/updated_screens/NewClient/image_picker_screen.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({Key? key, required this.user}) : super(key: key);
@@ -25,7 +26,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
           padding: padding,
           children: [
             buildHeader(
-                urlImage: urlImage, name: name, email: email, onClicked: () {},user: widget.user),
+                urlImage: urlImage,
+                name: name,
+                email: email,
+                onClicked: () {},
+                user: widget.user),
             const SizedBox(
               height: 48,
             ),
@@ -75,60 +80,63 @@ class _CustomDrawerState extends State<CustomDrawer> {
       {required String urlImage,
       required String name,
       required String email,
-      required VoidCallback onClicked,required  Future<DocumentSnapshot<Map<String, dynamic>>> user}) {
+      required VoidCallback onClicked,
+      required Future<DocumentSnapshot<Map<String, dynamic>>> user}) {
     return InkWell(
         onTap: onClicked,
-         child:FutureBuilder(
-                                
-                                future: user,
-                                builder:
-                                  (BuildContext,
-                                      AsyncSnapshot<DocumentSnapshot<Object?>>
-                                          snapshot) {
-                                            if (snapshot.connectionState==ConnectionState.waiting) {
-                                               return Center(
-              child: Text("")
-          );
-                                            }
-                                          else  if (snapshot.hasError) {
-          return Material(
-            child: Center(
-              child: Text('Oops,an error occured'),
-            ),
-          );
-        }
-                                return  Container(
-          padding: EdgeInsets.symmetric(vertical: 40),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(urlImage),
-              ),
-              SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    snapshot.data!["name"],
-                    style: const TextStyle(fontSize: 15, color: Colors.white),
+        child: FutureBuilder(
+            future: user,
+            builder: (BuildContext,
+                AsyncSnapshot<DocumentSnapshot<Object?>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: Text(""));
+              } else if (snapshot.hasError) {
+                return Material(
+                  child: Center(
+                    child: Text('Oops,an error occured'),
                   ),
-                  Text(
-                    snapshot.data!["email"],
-                    style: const TextStyle(fontSize: 10, color: Colors.white),
-                  ),
-                ],
-              ),
-              Spacer(),
-              const CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Colors.blue,
-                  child: Icon(Icons.edit))
-            ],
-          ),
-        );
-                              }
-                              ));
-         //
+                );
+              }
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: 40),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(urlImage),
+                    ),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          snapshot.data!["name"],
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.white),
+                        ),
+                        Text(
+                          snapshot.data!["email"],
+                          style: const TextStyle(
+                              fontSize: 10, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.blue,
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (builder) {
+                                return ImagePickerCurrentScreen();
+                              }));
+                            },
+                            icon: Icon(Icons.edit)))
+                  ],
+                ),
+              );
+            }));
+    //
   }
 }
