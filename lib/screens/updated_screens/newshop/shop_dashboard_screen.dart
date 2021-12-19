@@ -13,6 +13,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
      shrinkWrap: true,
       children: [
@@ -24,7 +25,7 @@ class _DashboardState extends State<Dashboard> {
          
         ),
         SizedBox(
-          height:MediaQuery.of(context).size.height*0.8,
+          height:MediaQuery.of(context).size.height*0.7,
 child: DashInfoCards(),
           //theses are tabs for the shop dashboard
         //   child: DefaultTabController(length: 2, child:  Scaffold(
@@ -307,7 +308,8 @@ Widget DashInfoCards() {
                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                          children: [
-                               Center(child: Text("20",style:TextStyle(fontSize: 35,fontWeight: FontWeight.bold,color:Colors.pink ) )),
+Categories(icon: Icons.category),
+                               Text("20",style:TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.pink ) ),
                                Text("Requests")
                          ],
                                  ),
@@ -337,7 +339,8 @@ Widget DashInfoCards() {
                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                          children: [
-                               Center(child: Text("10",style:TextStyle(fontSize: 35,fontWeight: FontWeight.bold,color:Colors.indigo ) )),
+                           Categories(icon: Icons.lock_clock),
+                               Center(child: Text("10",style:TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.indigo ) )),
                                Text("Appointments")
                          ],
                                  ),
@@ -380,8 +383,9 @@ Widget DashInfoCards() {
                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                          children: [
-                               Center(child: Text("20",style:TextStyle(fontSize: 35,fontWeight: FontWeight.bold,color:Colors.pink ) )),
-                               Text("Requests")
+                           Categories(icon: Icons.payment),
+                               Center(child: Text("20",style:TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.pink ) )),
+                               Text("Payments")
                          ],
                                  ),
                                ),
@@ -410,8 +414,10 @@ Widget DashInfoCards() {
                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                          children: [
-                               Center(child: Text("10",style:TextStyle(fontSize: 35,fontWeight: FontWeight.bold,color:Colors.indigo ) )),
-                               Text("Appointments")
+                           Categories(icon: Icons.takeout_dining),
+
+                               Center(child: Text("10",style:TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.indigo ) )),
+                               Text("Job Applications")
                          ],
                                  ),
                                ),
@@ -429,4 +435,25 @@ Widget DashInfoCards() {
             
               ],
              );
+}
+
+//tags model class
+class Categories extends StatelessWidget {
+  const Categories({Key? key, required this.icon}) : super(key: key);
+  final IconData icon;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: CircleAvatar(
+        radius: 20,
+        backgroundColor: Colors.red.shade50,
+        child: IconButton(
+          onPressed: () {},
+          icon: Icon(icon),
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
 }

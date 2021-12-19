@@ -11,6 +11,7 @@ import 'package:thecut/providers/provider.dart';
 import 'package:thecut/screens/updated_screens/NewClient/client_appointment_screen.dart';
 import 'package:thecut/screens/updated_screens/NewClient/client_home_screen.dart';
 import 'package:thecut/screens/updated_screens/NewClient/client_saved_screen.dart';
+import 'package:thecut/screens/updated_screens/NewClient/customer_drawer.dart';
 import 'package:thecut/screens/updated_screens/NewClient/retrieve_shop_screen.dart';
 import 'package:thecut/screens/updated_screens/search_delegate.dart';
 import 'package:thecut/sign_in_option_screen.dart';
@@ -75,197 +76,198 @@ late Future<DocumentSnapshot<Map<String, dynamic>>> user;
                       ))
                 ],
               ),
-              drawer: Drawer(
-                child: Material(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    /* crossAxisAlignment: CrossAxisAlignment.start,*/
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      DrawerHeader(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage('assets/images/drawer.jpg'),
-                          ),
-                        ),
-                        padding: EdgeInsets.all(0),
-                        child: Container(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              CircleAvatar(
-                                radius: 42,
-                                backgroundImage:
-                                    AssetImage('assets/images/profile.jpg'),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              FutureBuilder(
+              drawer:CustomDrawer(user: user),
+        //       drawer: Drawer(
+        //         child: Material(
+        //           child: Column(
+        //             crossAxisAlignment: CrossAxisAlignment.stretch,
+        //             /* crossAxisAlignment: CrossAxisAlignment.start,*/
+        //             mainAxisAlignment: MainAxisAlignment.start,
+        //             children: [
+        //               DrawerHeader(
+        //                 decoration: const BoxDecoration(
+        //                   image: DecorationImage(
+        //                     fit: BoxFit.fill,
+        //                     image: AssetImage('assets/images/drawer.jpg'),
+        //                   ),
+        //                 ),
+        //                 padding: EdgeInsets.all(0),
+        //                 child: Container(
+        //                   child: Column(
+        //                     children: [
+        //                       SizedBox(
+        //                         height: 10,
+        //                       ),
+        //                       CircleAvatar(
+        //                         radius: 42,
+        //                         backgroundImage:
+        //                             AssetImage('assets/images/profile.jpg'),
+        //                       ),
+        //                       SizedBox(
+        //                         height: 10,
+        //                       ),
+        //                       FutureBuilder(
                                 
-                                future: user,
-                                builder:
-                                  (BuildContext,
-                                      AsyncSnapshot<DocumentSnapshot<Object?>>
-                                          snapshot) {
-                                            if (snapshot.connectionState==ConnectionState.waiting) {
-                                               return Center(
-              child: Material(
-                child: SpinKitPouringHourGlassRefined(
-                  color: Colors.black,
-                ),
-              )
-          );
-                                            }
-                                          else  if (snapshot.hasError) {
-          return Material(
-            child: Center(
-              child: Text('Oops,an error occured'),
-            ),
-          );
-        }
-                                return Text(snapshot.data!["name"],
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                ),);
-                              })
+        //                         future: user,
+        //                         builder:
+        //                           (BuildContext,
+        //                               AsyncSnapshot<DocumentSnapshot<Object?>>
+        //                                   snapshot) {
+        //                                     if (snapshot.connectionState==ConnectionState.waiting) {
+        //                                        return Center(
+        //       child: Material(
+        //         child: SpinKitPouringHourGlassRefined(
+        //           color: Colors.black,
+        //         ),
+        //       )
+        //   );
+        //                                     }
+        //                                   else  if (snapshot.hasError) {
+        //   return Material(
+        //     child: Center(
+        //       child: Text('Oops,an error occured'),
+        //     ),
+        //   );
+        // }
+        //                         return Text(snapshot.data!["name"],
+        //                         style: TextStyle(
+        //                           fontSize: 10,
+        //                           color: Colors.white,
+        //                           fontWeight: FontWeight.w400,
+        //                         ),);
+        //                       })
                               
                              
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Text(
-                          "Account Settings",
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ListTile(
-                        leading: SizedBox(
-                          height: 36,
-                          width: 36,
-                          child: CircleAvatar(
-                              backgroundColor: Colors.red[200],
-                              child: Icon(Icons.payments, color: Colors.white)),
-                        ),
-                        title: Text(
-                          "Cards",
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                        trailing: InkWell(
-                          highlightColor: Colors.lightBlue[36],
-                          splashColor: Colors.lightBlue[100],
-                          enableFeedback: true,
-                          borderRadius: BorderRadius.circular(36),
-                          onTap: () {},
-                          child: Icon(Icons.arrow_forward_ios),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ListTile(
-                          leading: SizedBox(
-                            height: 36,
-                            width: 36,
-                            child: CircleAvatar(
-                                backgroundColor: Colors.amber,
-                                child: Icon(Icons.notifications,
-                                    color: Colors.white)),
-                          ),
-                          title: Text(
-                            "Job requests",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          trailing: InkWell(
-                            highlightColor: Colors.lightBlue[36],
-                            splashColor: Colors.lightBlue[100],
-                            enableFeedback: true,
-                            borderRadius: BorderRadius.circular(36),
-                            onTap: () {},
-                            child: Icon(Icons.arrow_forward_ios),
-                          )),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ListTile(
-                          leading: SizedBox(
-                            height: 36,
-                            width: 36,
-                            child: CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                child:
-                                    Icon(Icons.history, color: Colors.white)),
-                          ),
-                          title: Text("My barbers",
-                              style: TextStyle(
-                                fontSize: 16,
-                              )),
-                          trailing: InkWell(
-                            highlightColor: Colors.lightBlue[36],
-                            splashColor: Colors.lightBlue[100],
-                            enableFeedback: true,
-                            borderRadius: BorderRadius.circular(36),
-                            onTap: () {},
-                            child: Icon(Icons.arrow_forward_ios),
-                          )),
-                      SizedBox(
-                        height: 40,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Text("My Account",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.normal)),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              tileColor: Colors.lightBlue[36],
-                              title: TextButton(
-                                  onPressed: () {
-                                    Provider.of<ApplicationProvider>(context,
-                                            listen: false)
-                                        .signOut();
-                                    Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (builder) {
-                                      return SignInOptionScreen();
-                                    }), (route) => false);
-                                    //go back to sign in
-                                  },
-                                  child: Text("Sign Out"))),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //               SizedBox(
+        //                 height: 10,
+        //               ),
+        //               Padding(
+        //                 padding: const EdgeInsets.only(left: 40),
+        //                 child: Text(
+        //                   "Account Settings",
+        //                   style: TextStyle(
+        //                     fontSize: 16,
+        //                   ),
+        //                 ),
+        //               ),
+        //               SizedBox(
+        //                 height: 10,
+        //               ),
+        //               ListTile(
+        //                 leading: SizedBox(
+        //                   height: 36,
+        //                   width: 36,
+        //                   child: CircleAvatar(
+        //                       backgroundColor: Colors.red[200],
+        //                       child: Icon(Icons.payments, color: Colors.white)),
+        //                 ),
+        //                 title: Text(
+        //                   "Cards",
+        //                   style: TextStyle(
+        //                     fontSize: 16,
+        //                   ),
+        //                 ),
+        //                 trailing: InkWell(
+        //                   highlightColor: Colors.lightBlue[36],
+        //                   splashColor: Colors.lightBlue[100],
+        //                   enableFeedback: true,
+        //                   borderRadius: BorderRadius.circular(36),
+        //                   onTap: () {},
+        //                   child: Icon(Icons.arrow_forward_ios),
+        //                 ),
+        //               ),
+        //               SizedBox(
+        //                 height: 10,
+        //               ),
+        //               ListTile(
+        //                   leading: SizedBox(
+        //                     height: 36,
+        //                     width: 36,
+        //                     child: CircleAvatar(
+        //                         backgroundColor: Colors.amber,
+        //                         child: Icon(Icons.notifications,
+        //                             color: Colors.white)),
+        //                   ),
+        //                   title: Text(
+        //                     "Job requests",
+        //                     style: TextStyle(
+        //                       fontSize: 16,
+        //                     ),
+        //                   ),
+        //                   trailing: InkWell(
+        //                     highlightColor: Colors.lightBlue[36],
+        //                     splashColor: Colors.lightBlue[100],
+        //                     enableFeedback: true,
+        //                     borderRadius: BorderRadius.circular(36),
+        //                     onTap: () {},
+        //                     child: Icon(Icons.arrow_forward_ios),
+        //                   )),
+        //               SizedBox(
+        //                 height: 10,
+        //               ),
+        //               ListTile(
+        //                   leading: SizedBox(
+        //                     height: 36,
+        //                     width: 36,
+        //                     child: CircleAvatar(
+        //                         backgroundColor: Colors.grey,
+        //                         child:
+        //                             Icon(Icons.history, color: Colors.white)),
+        //                   ),
+        //                   title: Text("My barbers",
+        //                       style: TextStyle(
+        //                         fontSize: 16,
+        //                       )),
+        //                   trailing: InkWell(
+        //                     highlightColor: Colors.lightBlue[36],
+        //                     splashColor: Colors.lightBlue[100],
+        //                     enableFeedback: true,
+        //                     borderRadius: BorderRadius.circular(36),
+        //                     onTap: () {},
+        //                     child: Icon(Icons.arrow_forward_ios),
+        //                   )),
+        //               SizedBox(
+        //                 height: 40,
+        //               ),
+        //               Padding(
+        //                 padding: const EdgeInsets.only(left: 40),
+        //                 child: Text("My Account",
+        //                     style: TextStyle(
+        //                         fontSize: 16, fontWeight: FontWeight.normal)),
+        //               ),
+        //               SizedBox(
+        //                 height: 20,
+        //               ),
+        //               Align(
+        //                 alignment: Alignment.bottomCenter,
+        //                 child: Padding(
+        //                   padding: const EdgeInsets.all(8.0),
+        //                   child: ListTile(
+        //                       shape: RoundedRectangleBorder(
+        //                           borderRadius: BorderRadius.circular(20)),
+        //                       tileColor: Colors.lightBlue[36],
+        //                       title: TextButton(
+        //                           onPressed: () {
+        //                             Provider.of<ApplicationProvider>(context,
+        //                                     listen: false)
+        //                                 .signOut();
+        //                             Navigator.pushAndRemoveUntil(context,
+        //                                 MaterialPageRoute(builder: (builder) {
+        //                               return SignInOptionScreen();
+        //                             }), (route) => false);
+        //                             //go back to sign in
+        //                           },
+        //                           child: Text("Sign Out"))),
+        //                 ),
+        //               )
+        //             ],
+        //           ),
+        //         ),
+        //       ),
               bottomNavigationBar: BottomNavigationBar(
                   type: BottomNavigationBarType.shifting,
                   backgroundColor: Colors.white,

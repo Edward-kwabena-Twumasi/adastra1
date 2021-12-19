@@ -24,10 +24,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //declase isloading
   late bool isLoading = false;
-  late Timer _timer;
-  int _start = 2;
+  // late Timer _timer;
+  // int _start = 2;
 
-  void startTimer() {}
+  // void startTimer() {}
 
   String client = "";
   void initState() {
@@ -45,12 +45,12 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
 
-    startTimer();
+    // startTimer();
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    // _timer.cancel();
     super.dispose();
   }
 
@@ -138,9 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   );
                                 } else if (snapshots.hasData) {
-                                  // Provider.of<ApplicationProvider>(context,
-                                  //         listen: false)
-                                  //     .isLoading = false;
+                                  Provider.of<ApplicationProvider>(context,
+                                          listen: false)
+                                      .isLoading = false;
                                 }
                                 return snapshots.data!.size < 1
                                     ? Center(child: Text("No shops yet!"))
@@ -330,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
+//
 class ClipPathClass extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
@@ -366,7 +366,7 @@ class Categories extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: CircleAvatar(
-        radius: 40,
+        radius: 20,
         backgroundColor: Colors.red.shade50,
         child: IconButton(
           onPressed: () {},
@@ -426,10 +426,10 @@ Widget SalonCards(String image, String name, double rating, String description,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.6,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: Colors.grey.shade50,
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),

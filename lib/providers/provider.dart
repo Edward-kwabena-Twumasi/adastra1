@@ -16,7 +16,7 @@ class ApplicationProvider extends ChangeNotifier {
   String shopId = "0245382714";
   Map<String, dynamic> shopDetails = {};
   SharedPreferences? _preferences;
-  bool isLoading = true;
+  bool isLoading = false;
 
   final StreamController<String?> _authController = StreamController<String?>();
   Sink<String?> get _addUser => _authController.sink;
