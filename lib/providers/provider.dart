@@ -122,11 +122,25 @@ class ApplicationProvider extends ChangeNotifier {
   }
 
   //Lets get shop document with phone this time with a query snapshot
-  Future<DocumentSnapshot<Map<String, dynamic>>> getBarber() async {
-    return await FirebaseFirestore.instance
+  // Future<DocumentSnapshot<Map<String, dynamic>>> getBarber() async {
+  //   return await FirebaseFirestore.instance
+  //       .collection("barbers")
+  //       .doc(phoneNumber).get()
+  //       ;
+  // }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getBarber()  {
+    return  FirebaseFirestore.instance
         .collection("barbers")
-        .doc(phoneNumber)
-        .get();
+        .doc(phoneNumber).snapshots()
+        ;
+  }
+  //get all shops
+  Stream<QuerySnapshot<Map<String, dynamic>>> getShops()  {
+    return  FirebaseFirestore.instance
+        .collection("barbers")
+        .snapshots()
+        ;
   }
 
 //Lets get shop document with phone this time with a query snapshot

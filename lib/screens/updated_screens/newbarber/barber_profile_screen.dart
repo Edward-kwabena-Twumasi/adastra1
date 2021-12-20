@@ -14,7 +14,7 @@ class BarberAboutScreen extends StatefulWidget {
 }
 
 class _BarberAboutScreenState extends State<BarberAboutScreen> {
-  late Future<DocumentSnapshot<Map<String, dynamic>>> barber;
+  late Stream<DocumentSnapshot<Map<String, dynamic>>> barber;
   
   @override
   void initState() {
@@ -49,9 +49,9 @@ class _BarberAboutScreenState extends State<BarberAboutScreen> {
                              SizedBox(
                   height: 40,
                              ),
-                          FutureBuilder(
+                          StreamBuilder(
                                   
-                                  future: barber,
+                                  stream: barber,
                                   builder:
                                     (BuildContext,
                                         AsyncSnapshot<DocumentSnapshot<Object?>>
