@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:thecut/screens/Shop/shop_home_screen.dart';
+//import 'package:thecut/screens/Shop/shop_home_screen.dart';
 // import 'package:thecut/screens/client_screen_with_drawer.dart';
-import 'package:thecut/screens/updated_screens/newshop/shop_main_screen.dart';
+import 'package:thecut/screens/newshop/shop_main_screen.dart';
 
 import 'providers/provider.dart';
 

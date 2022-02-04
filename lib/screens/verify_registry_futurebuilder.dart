@@ -4,9 +4,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:thecut/onBoarding_one/onboarding_one.dart';
 import 'package:thecut/providers/provider.dart';
-import 'package:thecut/screens/updated_screens/NewClient/client_main_screen.dart';
-import 'package:thecut/screens/updated_screens/newbarber/barber_main_screen.dart';
-import 'package:thecut/screens/updated_screens/newshop/shop_main_screen.dart';
+import 'package:thecut/screens/NewClient/client_main_screen.dart';
+import 'package:thecut/screens/newbarber/barber_main_screen.dart';
+import 'package:thecut/screens/newshop/shop_main_screen.dart';
 
 class VerifyRegistryBuilderScreen extends StatefulWidget {
   const VerifyRegistryBuilderScreen({Key? key}) : super(key: key);
@@ -28,10 +28,8 @@ class _VerifyRegistryBuilderScreenState extends State<VerifyRegistryBuilderScree
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Material(
-            child: Center(
-              child: Text('Oops ,an error occured'),
-            ),
+          return Center(
+            child: Text('Error occured'),
           );
         }
         if (snapshot.hasData && !snapshot.data!.exists) {

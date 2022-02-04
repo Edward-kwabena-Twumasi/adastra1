@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thecut/providers/provider.dart';
-import 'package:thecut/screens/updated_screens/newbarber/barber_main_screen.dart';
+import 'package:thecut/screens/newbarber/barber_main_screen.dart';
 
 // import 'client_screen_with_drawer.dart';
 
@@ -16,7 +16,9 @@ class BarberRegistrationScreen extends StatefulWidget {
 }
 
 class _BarberRegistrationScreenState extends State<BarberRegistrationScreen> {
-  TextEditingController fullNameCtrl = TextEditingController();
+  TextEditingController firstNameCtrl = TextEditingController();
+    TextEditingController secondNameCtrl = TextEditingController();
+
   TextEditingController phoneNumberCtrl = TextEditingController();
   TextEditingController shopCodeCtrl = TextEditingController();
   TextEditingController emailCtrl = TextEditingController();
@@ -58,19 +60,47 @@ class _BarberRegistrationScreenState extends State<BarberRegistrationScreen> {
                         TextFormField(
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Full Name is Required';
+                              return 'First Name is Required';
                             }
                             return null;
                           },
-                          controller: fullNameCtrl,
+                          controller: firstNameCtrl,
                           keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Enter your Full Name',
-                            labelStyle: TextStyle(
-                              color:Colors.black,
-                            ),
-                          ),
+                          decoration:  InputDecoration(
+                    prefixIcon: Icon(Icons.person),
+                    contentPadding: EdgeInsets.only(bottom: 3),
+                    labelText: 'First name',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: 'Eg. John',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black.withOpacity(0.4),
+                    ))
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                         TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Last Name is Required';
+                            }
+                            return null;
+                          },
+                          controller: secondNameCtrl,
+                          keyboardType: TextInputType.text,
+                          decoration:  InputDecoration(
+                    prefixIcon: Icon(Icons.person),
+                    contentPadding: EdgeInsets.only(bottom: 3),
+                    labelText: 'Last name',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: 'Eg. Doe',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black.withOpacity(0.4),
+                    ))
                         ),
                         const SizedBox(
                           height: 10.0,
@@ -111,14 +141,17 @@ class _BarberRegistrationScreenState extends State<BarberRegistrationScreen> {
                           },
                           controller: phoneNumberCtrl,
                           keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            focusColor: Colors.black,
-                            labelText: 'Enter your Phone Number',
-                            labelStyle: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
+                          decoration:  InputDecoration(
+                    prefixIcon: Icon(Icons.phone),
+                    contentPadding: EdgeInsets.only(bottom: 3),
+                    labelText: 'Phone number',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: 'Eg. 123xxxxxxx',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black.withOpacity(0.4),
+                    ))
                         ),
                         const SizedBox(
                           height: 10.0,
@@ -140,19 +173,20 @@ class _BarberRegistrationScreenState extends State<BarberRegistrationScreen> {
                           height: 10.0,
                         ),
                         TextFormField(
-                          // validator: (value) {
-                          //   if (value == null || value.isEmpty) {
-                          //     return 'Optional SHOP COR';
-                          //   }
-                          //   return null;
-                          // },
+                          
                           controller: shopCodeCtrl,
                           keyboardType: TextInputType.text,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Shop SHORT CODE (Optional)',
-                            labelStyle: TextStyle(color: Colors.black),
-                          ),
+                          decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.code),
+                    contentPadding: EdgeInsets.only(bottom: 3),
+                    labelText: 'Shop code',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: '123456',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black.withOpacity(0.4),
+                    ))
                         ),
                         const SizedBox(
                           height: 10.0,
@@ -166,7 +200,7 @@ class _BarberRegistrationScreenState extends State<BarberRegistrationScreen> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
+                      if (_formKey.currentState!.validate() ) {
                           if(sex!='-1'){
                             FirebaseFirestore.instance
                                 .collection("barbers")
@@ -176,8 +210,9 @@ class _BarberRegistrationScreenState extends State<BarberRegistrationScreen> {
                               "email": emailCtrl.text,
                               "phone": phoneNumberCtrl.text,
                               "sex": sex,
-                              "name": fullNameCtrl.text,
-                              "photo_url": ""
+                              "name": firstNameCtrl.text+" "+secondNameCtrl.text,
+                              "photo_url": "",
+                              "shop_affiliation":"none"
                             }).then((value) {
                               print("Client Account Created Successfully");
                               FirebaseFirestore.instance

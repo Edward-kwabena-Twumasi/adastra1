@@ -37,8 +37,7 @@ class _RegisterShopLocationState extends State<RegisterShopLocation> {
   var shops;
 
   @override
-  Widget build(BuildContext context){
-
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('Register Shop Location'),
@@ -50,7 +49,7 @@ class _RegisterShopLocationState extends State<RegisterShopLocation> {
           onLongPress: (LatLng cord) {
             _selectLocation(cord, context);
           },
-          markers: { 
+          markers: {
         if(_shopLocation!=null)_shopLocation
         },
           onMapCreated: (GoogleMapController mapController) async {
@@ -79,7 +78,7 @@ class _RegisterShopLocationState extends State<RegisterShopLocation> {
   @override
   initState() {
     print(
-        "***initState Function***");
+        "******************************initState Function******************************************");
     getCurrentLocation();
   }
 
@@ -90,7 +89,7 @@ class _RegisterShopLocationState extends State<RegisterShopLocation> {
     });
 
     showDialog(
-        context: context,
+        context: context, 
         builder: (builder) {
           return AlertDialog(
             content: Text('Keep coordinates as Shop Location'),
@@ -105,7 +104,7 @@ class _RegisterShopLocationState extends State<RegisterShopLocation> {
                   onPressed: () {
                     final appProv = Provider.of<ApplicationProvider>(context,
                         listen: false);
-                    appProv.shopDetails['coordinates'] = GeoPoint(argument.latitude,argument.longitude);
+                    appProv.shopDetails['location'] = GeoPoint(argument.latitude,argument.longitude);
                     print(appProv.shopDetails);
 
                     Navigator.of(builder).pop();
@@ -131,7 +130,7 @@ class _RegisterShopLocationState extends State<RegisterShopLocation> {
 
   CameraPosition initialCameraPosition() {
     print(
-        "***Initial Camera Position Initialization***");
+        "*******************************Initial Camera Position Initialization**********************************");
     return CameraPosition(
         target: LatLng(currentpos!.latitude, currentpos!.longitude), zoom: 16);
   }

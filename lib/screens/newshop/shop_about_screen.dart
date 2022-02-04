@@ -1,18 +1,23 @@
-import 'dart:math';
+import 'dart:async';
+
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+//import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:thecut/providers/provider.dart';
 //import 'package:thecut/screens/NewClient/client_home_screen.dart';
-//import 'package:thecut/screens/NewClient/nearby_screen.dart';
-import 'package:thecut/screens/Shop/shop_home_screen.dart';
-//import 'package:thecut/screens/newbarber/barber_main_screen.dart';
 import 'package:thecut/screens/newshop/book_appointment_screen.dart';
-import 'package:thecut/screens/newshop/shop_dashboard_screen.dart';
 import 'package:thecut/screens/newshop/shop_main_screen.dart';
 
+//import 'package:theshave/screens/Shop/shop_home_screen.dart';
+
 class AboutShop extends StatefulWidget {
-  const AboutShop({Key? key}) : super(key: key);
+  final String shopId;
+  const AboutShop({Key? key, required this.shopId}) : super(key: key);
 
   @override
   AboutShopState createState() => AboutShopState();
@@ -21,612 +26,491 @@ class AboutShop extends StatefulWidget {
 class AboutShopState extends State<AboutShop> {
   //BuildContext context =ScaffoldState().context;
   GlobalKey<ScaffoldState> scaffolKey = GlobalKey<ScaffoldState>();
-  //List<String> titles = ["", "Payment", "Notifications", "History"];
+  /* late String shopname = "";
+  late String shopMail = "";*/
 
-  List<Tags> specialists = [
-    Tags("images/salon.jpg", "Lord"),
-    Tags("images/haircut.jpg", "King"),
-    Tags("images/styling.jpg", "Manny")
-  ];
+  late StreamSubscription shopSubscription;
+  //List<String> titles = ["", "Payment", "Notifications", "History"];
+  Map<String, dynamic> shop = {"name": "", "landmark": ""};
+
   int index = 0;
   bool showsearch = true;
 
   @override
+  void initState() {
+    super.initState();
+    shopSubscription = Provider.of<ApplicationProvider>(context, listen: false)
+        .getShopForUser(widget.shopId)
+        .listen((event) {
+      setState(() {
+        shop = event.data()!;
+        print(shop);
+        /*shopname=event.data()!['name'];
+        shopMail=event.data()!['email'];*/
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-
         key: scaffolKey,
         extendBodyBehindAppBar: true,
-        body: CustomScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          slivers: [ SliverAppBar(
-          stretch: true,
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.pink,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          elevation: 6,
-          
-          expandedHeight: MediaQuery.of(context).size.height*0.36,
-          flexibleSpace: FlexibleSpaceBar(
-            stretchModes: [
-              StretchMode.zoomBackground,
-              StretchMode.blurBackground
-            ],
-            background: Header(context),
+        body: SafeArea(
+          child: Scaffold(
+            body: CustomScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  stretch: true,
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.pink,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  elevation: 6,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.3,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Header(context, shop),
+                  ),
+                ),
+                SliverFillRemaining(
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.60,
+                      child: ShopHome(
+                        shopId: widget.shopId,
+                      )),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+
+  Widget Header(BuildContext context, Map<String, dynamic> shop) {
+    ApplicationProvider provider() {
+      return Provider.of<ApplicationProvider>(context, listen: false);
+    }
+
+    List<dynamic> favorites = provider().userDetails["favorites"];
+    bool isFavorite =
+        favorites.any((element) => element["shop_id"] == shop["uid"]);
+
+    print(favorites.any((element) => element["shop_id"] == shop["uid"]));
+    return Stack(
+      children: [
+        Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage(
+                    'https://d2zdpiztbgorvt.cloudfront.net/region1/us/270012/biz_photo/7d1a76a087e84fa4b4e0ca73120aa8-Alphas-Cutz-biz-photo-e14e8d52566246d6a3a2e3ac578893-booksy.jpeg?size=640x427',
+                  ),
+                  fit: BoxFit.cover),
+            )),
+        Positioned(
+          left: 15,
+          bottom: 50,
+          child: Text(
+            shop["name"],
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
           ),
         ),
-            SliverFillRemaining(
-              
-              child: Wrap(
-                 
-                  children: [
-                    //tags or popular categories
-                    //This top widgget is the shop specialists tab
-                    // Padding(
-                    //   padding: const EdgeInsets.all(5.0),
-                    //   child: const Text("Shop Specialists",
-                    //       style: TextStyle(
-                    //           color: Colors.black,
-                    //           fontWeight: FontWeight.w300,
-                    //           fontSize: 18)),
-                    // ),
-                    // const SizedBox(
-                    //   height: 5,
-                    // ),
-                    // SizedBox(
-                    //   height: 80,
-                    //   child: ListView.builder(
-                    //       scrollDirection: Axis.horizontal,
-                    //       itemCount: specialists.length,
-                    //       itemBuilder: (buildContext, index) {
-                    //         return Padding(
-                    //           padding: const EdgeInsets.all(4.0),
-                    //           child: GestureDetector(
-                    //             onTap: () {
-                    //               Navigator.push(context,
-                    //                   MaterialPageRoute(
-                    //                       builder: (contex) {
-                    //                 return const BarberMainScreen();
-                    //               }));
-                    //             },
-                    //             child: Column(
-                    //               children: [
-                    //                 SizedBox(
-                    //                   height: 50,
-                    //                   width: 50,
-                    //                   child: CircleAvatar(
-                    //                       backgroundImage: AssetImage(
-                    //                           specialists[index]
-                    //                               .image)),
-                    //                 ),
-                    //                 Text(specialists[index].tagname)
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         );
-                    //       }),
-                    // ),
-                    //best shops
-                    SizedBox(height: MediaQuery.of(context).size.height*0.55,
-                    
-                     child: ShopHome())
-                  ]),
+        Positioned(
+          left: 15,
+          bottom: 30,
+          child: Text(
+            shop["landmark"],
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+          ),
+        ),
+        Positioned(
+          left: 15,
+          bottom: 12,
+          child: RatingBar.builder(
+            initialRating: 3.5,
+            minRating: 1,
+            direction: Axis.horizontal,
+            itemCount: 5,
+            tapOnlyMode: false,
+            updateOnDrag: false,
+            itemSize: 20,
+            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+            itemBuilder: (context, _) => Icon(
+              Icons.star,
+              color: Colors.amber,
+              size: 9.0,
             ),
+            onRatingUpdate: (double value) {},
+          ),
+        ),
+        Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            decoration: const BoxDecoration(color: Colors.transparent)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            IconButton(
+                onPressed: () {
+                  String? thisclient =
+                      Provider.of<ApplicationProvider>(context, listen: false)
+                          .phoneNumber;
+                  if (isFavorite) {
+                    FirebaseFirestore.instance
+                        .collection("clients")
+                        .doc(thisclient)
+                        .update({
+                      'favorites': FieldValue.arrayRemove([
+                        {"shop_id": shop["uid"], "name": shop["name"]}
+                      ])
+                    }).then((value) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Removed from Favourites'),
+                      ));
+                      setState(() {
+                        isFavorite = !isFavorite;
+                      });
+                      // print("Shop "+shop["uid"]+"added to favorites");
+                    });
+                  } else {
+                    FirebaseFirestore.instance
+                        .collection("clients")
+                        .doc(thisclient)
+                        .update({
+                      'favorites': FieldValue.arrayUnion([
+                        {"shop_id": shop["uid"], "name": shop["name"]}
+                      ])
+                    }).then((value) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Added to Favourites'),
+                      ));
+                       setState(() {
+                        isFavorite = !isFavorite;
+                      });
+                      // print("Shop "+shop["uid"]+"added to favorites");
+                    });
+                  }
+                },
+                icon: Icon(
+                 isFavorite ?FontAwesomeIcons.solidHeart:FontAwesomeIcons.heart,
+                  color: isFavorite ? Colors.red : Colors.white,
+                  size:isFavorite ? 30:24 ,
+                ))
           ],
-        ));
+        ),
+        //Book button
+        Positioned(
+            bottom: 7,
+            right: 9,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 10,
+                    shape: StadiumBorder(),
+                    primary: Colors.black54,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    side: BorderSide(color: Colors.white, width: 1.5)),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (contex) {
+                    return BookAppointment(
+                        shopId: shop["uid"], shopName: shop["name"]);
+                  }));
+                },
+                child: Text(
+                  "Book",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
+                )))
+      ],
+    );
   }
 }
 
-Widget Header(BuildContext context) {
-  return  Stack(
-    children: [
-      Container(
-        height: MediaQuery.of(context).size.height * 0.4,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(
-                  "images/nicesalon.jpg",
-                ),
-                fit: BoxFit.cover)),
-      ),
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.4,
-        decoration:
-            BoxDecoration(color: Colors.black.withOpacity(0.6)),
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                  title: Text("Best Street Salon ",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 19)),
-                  subtitle: Text("Obuasi mangoase road",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w300,
-                      ))),
-              SizedBox(
-                height: 3,
-              ),
-              Container(
-                  height: 40,
-                  child: Row(children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.star_border,
-                            color: Colors.white)),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.star_border,
-                            color: Colors.white)),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.star_border,
-                            color: Colors.white)),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.star_border,
-                            color: Colors.white)),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.star_border,
-                            color: Colors.white)),
-                  ])),
-              Divider(
-                color: Colors.white,
-              ),
-              Row(
-                children: [
-                  Spacer(),
-                  Column(
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.web,
-                              color: Colors.white)),
-                      Text("Website",
-                          style: TextStyle(color: Colors.white))
-                    ],
-                  ),
-                  Spacer(),
-                  Column(
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.directions,
-                              color: Colors.white)),
-                      Text("Directios",
-                          style: TextStyle(color: Colors.white))
-                    ],
-                  ),
-                  Spacer(),
-                  Column(
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.phone,
-                              color: Colors.white)),
-                      Text("Contact",
-                          style: TextStyle(color: Colors.white))
-                    ],
-                  ),
-                  Spacer(),
-                  Column(
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.share,
-                              color: Colors.white)),
-                      Text("Share",
-                          style: TextStyle(color: Colors.white))
-                    ],
-                  ),
-                  Spacer(),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    ],
-  );
+//item class for expansionpansel list
+class Item {
+  Item({
+    required this.expandedValue,
+    required this.headerValue,
+    this.isExpanded = false,
+  });
+
+  String expandedValue;
+  String headerValue;
+  bool isExpanded;
 }
 
-//search delegate
+List<Item> items = [
+  Item(expandedValue: "This is info about this shop", headerValue: "About"),
+  Item(expandedValue: "Shop opening hours", headerValue: "Opening Hours"),
+  Item(expandedValue: "Shop opening Facilities", headerValue: "Facilities"),
+  Item(expandedValue: "Shop contact info", headerValue: "Contact"),
+];
+//the header widget
+
 class Specialists {
   String image;
   String tagname;
+
   Specialists(this.image, this.tagname);
 }
 
 //shop info tabs
 class ShopHome extends StatefulWidget {
-  const ShopHome({Key? key}) : super(key: key);
+  final String shopId;
+  ShopHome({Key? key, required this.shopId}) : super(key: key);
 
   @override
   _ShopHomeState createState() => _ShopHomeState();
 }
 
 class _ShopHomeState extends State<ShopHome> with TickerProviderStateMixin {
-  // int initial = 0;
-  // TabController tabController =
-  //     TabController(
-  //       initialIndex: 0,
-  //       length: 4, vsync: );
+  List<Map<String, dynamic>> shopProducts = [];
+  late StreamSubscription shopProductSubscription;
 
+  @override
+  initState() {
+    super.initState();
+    print("Init of SHOP HOME");
+    setState(() {
+      shopProductSubscription = FirebaseFirestore.instance
+          .collection('shop_styles')
+          .doc(widget.shopId)
+          .collection('style')
+          .snapshots()
+          .listen((event) {
+        setState(() {
+          shopProducts = [];
+        });
+        print(event.docs.length);
+
+        for (var style in event.docs) {
+          //print(oldStyle.data().runtimeType);
+          print('HERE');
+          print(style.data());
+          setState(() {
+            shopProducts.add(style.data());
+          });
+        }
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          floatingActionButtonLocation:FloatingActionButtonLocation.endDocked,
-          floatingActionButton:FloatingActionButton(onPressed: (){
-             Navigator.push(context,
-              MaterialPageRoute(builder: (contex) {
-            return const BookAppointment();
-          }));
-          },
-          child:FaIcon(FontAwesomeIcons.book)
-          ),
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(50),
-            child: AppBar(
-              titleSpacing: 0,
-              backgroundColor: Colors.white,
-              elevation: 6,
-              bottom: TabBar(
-                indicatorColor: Colors.green,
-                labelStyle: TextStyle(color: Colors.green),
-                unselectedLabelColor: Colors.black,
-                labelColor: Colors.green,
-                tabs: [
-                  Tab(
-                    text: "About",
-                  ),
-                  Tab(
-                    text: "Services",
-                  ),
-                  Tab(
-                    text: "Gallery",
-                  ),
-                  Tab(
-                    text: "Review",
-                  ),
-                ],
-              ),
+    print("Shop ID: ${widget.shopId}");
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: AppBar(
+            titleSpacing: 0,
+            backgroundColor: Colors.white,
+            elevation: 6,
+            bottom: TabBar(
+              indicatorColor: Colors.green,
+              labelStyle: TextStyle(color: Colors.green),
+              unselectedLabelColor: Colors.black,
+              labelColor: Colors.green,
+              tabs: [
+                Tab(
+                  text: "About",
+                ),
+                Tab(
+                  text: "Services",
+                ),
+                Tab(
+                  text: "Gallery",
+                ),
+                Tab(
+                  text: "Review",
+                ),
+              ],
             ),
           ),
-          body: TabBarView(
-            children: [
-              About(context),
-              Services(context),
-              Newgallery(context),
-              Review(context)
-            ],
+        ),
+        body: TabBarView(
+          children: [
+            About(context),
+            Services(context),
+            Newgallery(context),
+            Center(
+              child: Text("Reviews of shop"),
+            )
+            //Review(context)
+          ],
+        ),
+      ),
+    );
+  }
+
+//shop about info
+
+  Widget About(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              setState(() {
+                items[index].isExpanded = !isExpanded;
+              });
+            },
+            children: items.map<ExpansionPanel>((Item item) {
+              return ExpansionPanel(
+                headerBuilder: (BuildContext context, bool isExpanded) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 10.0, top: 4),
+                    child: Text(
+                      item.headerValue,
+                      style: TextStyle(
+                          color: Colors.green, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                },
+                body: Text(item.expandedValue),
+                isExpanded: item.isExpanded,
+              );
+            }).toList(),
           ),
         ),
       ),
     );
   }
-}
 
-Widget About(BuildContext context) {
-  return SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("About"),
-        ),
-        Text(
-            "Best street salon and shop is a unisex salon that offers services of all kinds"),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Opening hours"),
-        ),
-        ListTile(
-            title: Row(
-          children: [
-            Text("Monday - Friday"),
-            Spacer(),
-            Text("8am - 4pm"),
-          ],
-        )),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Address"),
-        ),
-        ListTile(
-          title: Text("Obuasi mangoase"),
-          subtitle: Text("You can locate our shop at obuasi off mangoase road"),
-        )
-      ],
-    ),
-  );
-}
+  Widget Services(BuildContext context) {
+    return shopProducts.length == 0
+        ? Center(child: Text('No Products'))
+        : SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: shopProducts
+                  .map((e) => ShopDisplayProduct(e['name'], e['price']))
+                  .toList(),
+            ),
+          );
+  }
 
-Widget Services(BuildContext context) {
-  return SingleChildScrollView(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        ListTile(
-          leading: Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(color: Colors.grey),
-                BoxShadow(color: Colors.black),
-                BoxShadow(color: Colors.grey),
-                BoxShadow(color: Colors.amber),
-              ]),
-              child: Image.asset("images/lovecut.jpg")),
-          title: Row(
-            children: [
-              Text("Hair cut"),
-              Spacer(),
-              Text("15 GHS",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      backgroundColor: Colors.white)),
-            ],
+  Widget ShopDisplayProduct(String title, String price) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: ListTile(
+          minVerticalPadding: 0,
+
+          leading: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/cutcut.png"),
+                        fit: BoxFit.cover)),
+                width: 60,
+                height: 60,
+              )),
+          title: Text(title,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              )),
+          // subtitle: Text(category,style: TextStyle(fontSize: 11),),
+          trailing: Text(
+            "GH¢ $price",
           ),
-          subtitle: Text("Find styles"),
-
         ),
-        ListTile(
-          leading: Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(color: Colors.grey),
-                BoxShadow(color: Colors.black),
-                BoxShadow(color: Colors.grey),
-                BoxShadow(color: Colors.amber),
-              ]),
-              child: Image.asset("images/lovecut.jpg")),
-          title: Row(
-            children: [
-              Text("Hair styling"),
-              Spacer(),
-              Text("20 GHS",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  )),
-            ],
-          ),
-          subtitle: Text("Find styles"),
-
-        ),
-        ListTile(
-          leading: Container(
-              decoration: BoxDecoration(),
-              child: Image.asset("images/lovecut.jpg")),
-          title: Row(
-            children: [
-              Text("Hair coloring"),
-              Spacer(),
-              Text("7 GHS",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ))
-            ],
-          ),
-          subtitle: Text("Find styles"),
-
-        )
-      ],
-    ),
-  );
-}
-
-//old gallery
-// Widget Gallery(BuildContext context) {
-//   return SingleChildScrollView(
-//     child: MediaQuery.removePadding(
-//       context: context,
-//       removeTop: true,
-//       child: SizedBox(
-//         height: MediaQuery.of(context).size.height * 9.8,
-//         child: GridView.builder(
-//             itemCount: 7,
-//             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                 crossAxisCount: 2, crossAxisSpacing: 2, mainAxisSpacing: 2),
-//             itemBuilder: (context, photos) {
-//               return Container(
-//                 decoration: BoxDecoration(
-//                     borderRadius: BorderRadius.circular(10),
-//                     image: DecorationImage(
-//                         image: AssetImage("images/manshaving.jpg"),
-//                         fit: BoxFit.cover)),
-//                 height: 150,
-//                 child: Text("Nice fade"),
-//               );
-//             }),
-//       ),
-//     ),
-//   );
-// }
-
-List urls = [
-  "images/logo.png",
-  "images/nicesalon.jpg",
-  "images/hairapist.jpg",
-  "images/barbershop.jpg",
-  "images/lovecut.jpg"
-];
-//new gallery
-Widget Newgallery(BuildContext context) {
-  return CustomScrollView(
-    primary: false,
-    slivers: <Widget>[
-      SliverPadding(
-        padding: const EdgeInsets.all(20),
-        sliver: SliverGrid.count(
-            crossAxisSpacing: 15,
-            mainAxisSpacing: 15,
-            crossAxisCount: 2,
-            
-            children: List.generate(urls.length, (index) {
-              return Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Wrap(
-                  children: [
-                    Card(
-                        elevation: 3,
-                        child: Image.asset(
-                          urls[index],
-
-                        )
-                        ),
-                    Text("Style " + index.toString())
-                  ],
-                ),
-              );
-            })),
       ),
-    ],
-  );
-}
+    );
+  }
+
+  List urls = [
+    "images/logo.png",
+    "images/salon.jpg",
+    "images/styling.jpg",
+    "images/nicesalon.jpg",
+    "images/lovecut.jpg"
+  ];
+//new gallery
+  Widget Newgallery(BuildContext context) {
+    return CustomScrollView(
+      primary: false,
+      slivers: <Widget>[
+        SliverPadding(
+          padding: const EdgeInsets.all(20),
+          sliver: SliverGrid.count(
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
+              crossAxisCount: 2,
+              children: List.generate(urls.length, (index) {
+                return ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      urls[index],
+                      fit: BoxFit.cover,
+                    ));
+              })),
+        ),
+      ],
+    );
+  }
 
 //old gallery ends here
-Widget Review(BuildContext context) {
-  return SingleChildScrollView(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Text("Shop reviews"),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: ListTile(
-            title: TextField(
-              decoration: InputDecoration(
-                hintText: "Write review"
-              ),
 
-            ),
-            subtitle: TextButton(onPressed: (){},
-            child: Text("Submit"),),
+  Widget reviewCard(
+      String img, String name, String date, String time, String message) {
+    return ListTile(
+        tileColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        leading: CircleAvatar(
+          backgroundImage: AssetImage(img),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Row(
+            children: [
+              Text(name),
+              Spacer(),
+              Text(time),
+            ],
           ),
         ),
-
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: items.length,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Card(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: chatCard(
-                          items[index]["img"],
-                          items[index]["name"],
-                          items[index]["date"],
-                          items[index]["time"],
-                          items[index]["message"]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("This cut was pretty cool for me"),
-                    )
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ],
-    ),
-  );
-}
-
-Widget chatCard(
-    String img, String name, String date, String time, String message) {
-  return ListTile(
-      tileColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      leading: DecoratedBox(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.amber)),
-          child: CircleAvatar(
-            backgroundImage: AssetImage(img),
-          )),
-      title: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Text(name),
-            Spacer(),
-            Text(time),
-          ],
-        ),
-      ),
-      subtitle: Container(
-        height: 20,
-        child: Row(children: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border, color: Colors.yellow)),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border, color: Colors.yellow)),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border, color: Colors.yellow)),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.star_border,
-              )),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.star_border,
-              )),
-        ]),
-      ));
-}
-
-List items = [
-  {
-    "img": "images/nicesalon.jpg",
-    "name": "Kay",
-    "date": "20th Oct",
-    "time": "12:00 pm",
-    "message": "Hello"
-  },
-  {
-    "img": "images/barbclip.jpg",
-    "name": "Joe",
-    "date": "20th Oct",
-    "time": "12:00 pm",
-    "message": "Are you there?"
-  },
-];
-
-class Tags{
-  String image;String tagname;
-  Tags(this.image,this.tagname);
+        subtitle: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Row(children: [
+            IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.star_border, color: Colors.yellow)),
+            IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.star_border, color: Colors.yellow)),
+            IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.star_border, color: Colors.yellow)),
+            IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.star_border,
+                )),
+            IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.star_border,
+                )),
+          ]),
+        ));
+  }
 }

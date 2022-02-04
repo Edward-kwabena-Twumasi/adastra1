@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thecut/providers/provider.dart';
-import 'package:thecut/screens/updated_screens/NewClient/client_main_screen.dart';
+import 'package:thecut/screens/NewClient/client_main_screen.dart';
 // import 'package:thecut/screens/client_screen_with_drawer.dart';
 
 class ClientRegistrationScreen extends StatefulWidget {
@@ -16,13 +17,21 @@ class ClientRegistrationScreen extends StatefulWidget {
 }
 
 class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
-  TextEditingController fullName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
+  TextEditingController firstName = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController email = TextEditingController();
-  bool er1 = false, er2 = false;
-  List<String> sexes = ['M', 'F'];
-  String? sex = '-1';
 
+  bool er1 = false, er2 = false;
+  List<String> sexes = ['F', 'M'];
+  String? sex = '-1';
+  @override
+void initState(){
+  super.initState();
+  final appProv = Provider.of<ApplicationProvider>(context,
+      listen: false);
+  phone.text=appProv.phoneNumber!;
+}
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -56,15 +65,45 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                             }
                             return null;
                           },
-                          controller: fullName,
+                          controller: firstName,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Enter your Full Name',
-                            labelStyle: TextStyle(
-                              color: er1 == false ? Colors.black : Colors.red,
-                            ),
-                          ),
+                              prefixIcon: Icon(Icons.person),
+                              contentPadding: EdgeInsets.only(bottom: 3),
+                              labelText: 'First Name',
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              hintText: 'Eg. John',
+                              hintStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.black.withOpacity(0.4),
+                              )),
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Full Name is Required';
+                            }
+                            return null;
+                          },
+                          controller: lastName,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.person),
+                              contentPadding: EdgeInsets.only(bottom: 3),
+                              labelText: 'Last Name',
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              hintText: 'Eg. Backus',
+                              hintStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.black.withOpacity(0.4),
+                              )),
                         ),
                         const SizedBox(
                           height: 10.0,
@@ -108,23 +147,36 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                           controller: phone,
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            focusColor: Colors.black,
-                            labelText: 'Enter your Phone Number',
-                            labelStyle: TextStyle(
-                              color: er1 == false ? Colors.black : Colors.red,
-                            ),
-                          ),
+                              prefixIcon: Icon(Icons.phone),
+                              contentPadding: EdgeInsets.only(bottom: 3),
+                              labelText: 'Phone number',
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              hintText: 'Eg. John',
+                              hintStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.black.withOpacity(0.4),
+                              )),
                         ),
                         const SizedBox(
                           height: 10.0,
                         ),
                         TextFormField(
-                          controller: email,
-                          keyboardType: TextInputType.text,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Email'),
-                        ),
+                            controller: email,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.email),
+                                contentPadding: EdgeInsets.only(bottom: 3),
+                                labelText: 'Your email',
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                hintText: 'Eg. you@gmil.com',
+                                hintStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.black.withOpacity(0.4),
+                                ))),
                         const SizedBox(
                           height: 10.0,
                         ),
@@ -139,7 +191,8 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      final appProv=Provider.of<ApplicationProvider>(context,listen:false);
+                      final appProv = Provider.of<ApplicationProvider>(context,
+                          listen: false);
 
                       if (_formKey.currentState!.validate()) {
                         if (sex != '-1') {
@@ -150,19 +203,20 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                                 .doc(appProv.phoneNumber)
                                 .set({
                               "uid": appProv.phoneNumber,
-                              "email":email.text ,
+                              "email": email.text,
                               "phone": phone.text,
                               "sex": sex,
-                              "name": fullName.text,
-                              "photo_url": ""
+                              "firstName": firstName.text,
+                              "lastName": lastName.text,
+                              "photo_url": "",
+                              "favorites":[]
                             }).then((value) {
                               print("Client Account Created Successfully");
                               FirebaseFirestore.instance
                                   .collection("registry")
                                   .doc(appProv.phoneNumber)
                                   .set({
-                                    "uid":
-                                        appProv.phoneNumber,
+                                    "uid": appProv.phoneNumber,
                                     "type": "client"
                                   })
                                   .then((value) => {
@@ -181,7 +235,7 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                                         }), (route) => false)
                                       })
                                   .catchError((error) {
-                                     print(error.toString());
+                                    print(error.toString());
                                   });
                             }).catchError((error) {
                               print(error.toString());

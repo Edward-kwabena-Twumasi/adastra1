@@ -3,206 +3,330 @@
 //white contains a search bar
 //it gives a gist to users on which services are available to find
 //listed for them at screen load are best rated shops based on customer ratings
-import 'package:flutter/material.dart';
-import 'package:thecut/screens/NewClient/nested_scroll.dart';
-import 'package:thecut/screens/newshop/shop_about_screen.dart';
+import 'dart:async';
+import 'dart:ffi';
 
-class homeScreen extends StatefulWidget {
-  const homeScreen({Key? key}) : super(key: key);
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+//import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:thecut/providers/provider.dart';
+import 'package:thecut/screens/NewClient/categories_widget.dart';
+
+//import 'package:thecut/screens/updated_screens/newbarber/barber_main_screen.dart';
+import 'package:thecut/screens/newshop/shop_about_screen.dart';
+import 'package:thecut/screens/search_delegate.dart';
+import 'package:shimmer/shimmer.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _homeScreenState createState() => _homeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _homeScreenState extends State<homeScreen> {
-  //list of category objects
-  List<Tags> categories = [
-    Tags("images/nicesalon.jpg", "Salon"),
-    Tags("images/hairapist.jpg", "Hair cut"),
-    Tags("images/lovecut.jpg", "Styling")
-  ];
-  //list of salon objects
-  List<Salons> salons = [
-    Salons("images/nicesalon.jpg", "Afias Salon", 4.3,
-        "Unisex salon located at Adenta"),
-    Salons("images/barbclip.jpg", "American barbers", 4.2,
-        "Unisex Barbering shop located at Tech")
-  ];
+class _HomeScreenState extends State<HomeScreen> {
+  //declase isloading
+  late bool isLoading = true;
+
+  List<Map<String, dynamic>> shops = [];
+  late StreamSubscription userSubscription;
+  late StreamSubscription shopsSubscription;
+
+  String client = "";
+
+  void initState() {
+    super.initState();
+    setState(() {
+      shopsSubscription =
+          Provider.of<ApplicationProvider>(context, listen: false)
+              .getShops()
+              .listen((event) {
+        setState(() {
+          isLoading = true;
+        });
+        shops = [];
+        event.docs.forEach((element) {
+          setState(() {
+            shops.add(element.data());
+          });
+        });
+        setState(() {
+          isLoading = false;
+        });
+        // Future.delayed(Duration(seconds: 2));
+        // setState(() {
+        //   isLoading=false;
+        // });
+      });
+    });
+    setState(() {
+      userSubscription =
+          Provider.of<ApplicationProvider>(context, listen: false)
+              .getUser()
+              .listen((event) {
+        setState(() {
+         
+        });
+      });
+    });
+
+    // startTimer();
+  }
+
+  @override
+  void dispose() {
+    // _timer.cancel();
+    super.dispose();
+    userSubscription.cancel();
+    shopsSubscription.cancel();
+  }
+
   //A stack is used to create the aligning effect and overlaying
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Container(
+
+        child: Column(
       children: [
-        //first child of parent stack aligned at bottom container most of the
-        //information on the client home screen
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //tags or popular categories
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.3,
+        Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.zero,
+                height: 220,
+                //color: Colors.grey,
+                decoration: const BoxDecoration(
+                   color: Colors.white,
+
+                )
+            ),
+            Positioned(
+              top: 2,
+              child:  Container(
+height: 60,
+                width: MediaQuery.of(context).size.width-2,
+                child: Card(
+                  elevation: 7,
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.menu,
+                          color: Colors.black,
                         ),
-                        const Text("Services you will find",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18)),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        SizedBox(
-                          height: 90,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: categories.length,
-                              itemBuilder: (buildContext, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: GestureDetector(
-                                    onTap: (){
-                                       Navigator.push(context, MaterialPageRoute(builder: (contex) {
-                          return const MyStatelessWidget();
-                        }));
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 60,
-                                          width: 70,
-                                          padding: const EdgeInsets.all(2),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            gradient: const LinearGradient(
-                                                colors: [
-                                                  Colors.pink,
-                                                  Colors.indigo
-                                                ],
-                                                begin: Alignment.bottomLeft,
-                                                end: Alignment.topRight),
-                                          ),
-                                          child: Image.asset(
-                                              categories[index].image,
-                                              fit: BoxFit.cover),
-                                        ),
-                                        ShaderMask(
-                                            shaderCallback: (shader) {
-                                             return LinearGradient(colors: [
-                                                Colors.pink,
-                                                Colors.indigo
-                                              ]).createShader(shader);
-                                            },
-                                            child:
-                                                Text(categories[index].tagname))
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ),
-                        //best shops
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text("Best rated salons",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18)),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        SizedBox(
-                          height: 180,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: salons.length,
-                              itemBuilder: (buildContext, index) {
-                                return SalonCards(
-                                    salons[index].image,
-                                    salons[index].name,
-                                    salons[index].rating,
-                                    salons[index].description,
-                                    context);
-                              }),
-                        )
-                      ]),
-                ),
-              )),
-        ),
-        //An aligned containeer at the top ,child of the parent stack
-        //it also contains a stack to create the overlay effect
-        Align(
-          alignment: Alignment.topCenter,
-          child: ClipPath(
-            clipper: ClipPathClass(),
-            child: Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                            "images/nicesalon.jpg",
-                          ),
-                          fit: BoxFit.cover)),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  decoration:
-                      BoxDecoration(color: Colors.black.withOpacity(0.6)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Find and book appointment ",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22)),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                            height: 40,
-                            width: MediaQuery.of(context).size.width - 20,
-                            child: TextField(
-                                decoration: InputDecoration(
-                                    hintText: "find shop",
-                                    fillColor: Colors.white.withOpacity(0.5),
-                                    filled: true))),
-                        SizedBox(
-                          height: 50,
-                        ),
-                      ],
-                    ),
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      ),
+
+                      IconButton(
+                          onPressed: () {
+                            showSearch(
+                                context: context, delegate: PerformSearch(shops));
+                            // Scaffold.of(context).showSnackBar(
+                            //     const SnackBar(content: Text('Ghana')));
+                          },
+                          icon: const Icon(Icons.search, color: Colors.black))
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            Positioned(
+                bottom: 0,
+                top: 65,
+                child:  Padding(
+                  padding: const EdgeInsets.only(left: 3.0,right: 5),
+                  child: Container(
+                  height: 155, //color: Colors.grey,
+width: MediaQuery.of(context).size.width-8,
+                      decoration:  BoxDecoration(
+                        borderRadius:BorderRadius.circular(5),
+                          image: DecorationImage(
+                              image: AssetImage('images/client_home_background.jpg'),
+                              fit: BoxFit.cover,alignment:Alignment.topCenter)
+                      )
+                  ),
+                )
+            )
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Popular Categories',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          context: context, builder: (builder){
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 20,
+                              ),
+                             Expanded(
+                                child: Container(
+                                 // height: MediaQuery.of(context).size.height*0.8,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15)
+                                  ),
+                                  child: GridView.count(crossAxisCount: 3,
+                                  children: [
+                                    Category(title: 'Shave'),
+                                    Category(title: 'Dye'),
+                                    Category(title: 'Trim'),
+                                    Category(title: 'Beard'),
+                                    Category(title: 'Retouch'),
+                                    Category(title: 'Beard'),
+                                    Category(title: 'Beard'),
+                                    Category(title: 'Retouch'),
+                                    Category(title: 'Beard'),
+                                  ],
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+
+                                  onPressed: (){
+                                    Navigator.pop(builder);
+                                  }, child: Text("Close",style:TextStyle(color:Colors.red)),
+                              style: ElevatedButton.styleFrom(
+                                primary:Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                                )
+                              ),
+                              )
+                            ],
+                          ),
+                        );
+                      });
+                    },
+                    child: Text('See All',
+                        style: TextStyle(
+                            fontSize: 11, fontWeight: FontWeight.w500)),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 70,
+              child: Wrap(
+                spacing: 7,
+                children: const [
+                  Category(title: 'Shave'),
+                  Category(title: 'Dye'),
+                  Category(title: 'Trim'),
+                  Category(title: 'Beard'),
+                  Category(title: 'Retouch'),
+                  Category(title: 'Beard'),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 5, vertical: 10.0),
+              child: RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                    text: "Suggested for you ",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500)),
+                TextSpan(
+                    text: "(" + shops.length.toString() + ")",
+                    style: TextStyle(color: Colors.blue)),
+              ])),
+            ),
+            SizedBox(
+              height: 110,
+              child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: isLoading?4:shops.length /*shops.length*/,
+                  itemBuilder: (context, index) {
+                    return isLoading?Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Container(
+                            child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ShimmerWidget.circular(
+                              width: 80,
+                              height: 85,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ShimmerWidget.rectangular(
+                                      width: 200, height: 15),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ShimmerWidget.rectangular(
+                                      width: 100, height: 12),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ShimmerWidget.rectangular(
+                                      width: 70, height: 10),
+                                )
+                              ],
+                            )
+                          ],
+                        )),
+                      ) :
+                    GestureDetector(
+                        onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (ctx) {
+                            return AboutShop(shopId: shops[index]["uid"]);
+                          }));
+                    },child:SalonCard("https://d2zdpiztbgorvt.cloudfront.net/region1/us/270012/biz_photo/7d1a76a087e84fa4b4e0ca73120aa8-Alphas-Cutz-biz-photo-e14e8d52566246d6a3a2e3ac578893-booksy.jpeg?size=640x427", shops[index]["name"],
+                      ( index%5).toDouble(), shops[index]["landmark"], context, isLoading));
+                  }),
+              /* ),*/
+            )
+          ],
         ),
       ],
-    );
+    ));
   }
 }
 
+//
 class ClipPathClass extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = Path();
-    path.lineTo(0.0, size.height - 40);
+    path.lineTo(0.0, size.height - 15);
 
     var firstControlPoint = Offset(size.width / 4, size.height);
     var firstPoint = Offset(size.width / 2, size.height);
@@ -210,7 +334,7 @@ class ClipPathClass extends CustomClipper<Path> {
         firstPoint.dx, firstPoint.dy);
 
     var secondControlPoint = Offset(size.width - (size.width / 4), size.height);
-    var secondPoint = Offset(size.width, size.height - 40);
+    var secondPoint = Offset(size.width, size.height - 15);
     path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
         secondPoint.dx, secondPoint.dy);
 
@@ -225,63 +349,113 @@ class ClipPathClass extends CustomClipper<Path> {
 }
 
 //tags model class
-class Tags {
-  String image;
-  String tagname;
-  Tags(this.image, this.tagname);
+class Categories extends StatelessWidget {
+  const Categories({Key? key, required this.icon}) : super(key: key);
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: CircleAvatar(
+        radius: 20,
+        backgroundColor: Colors.red.shade50,
+        child: IconButton(
+          onPressed: () {},
+          icon: Icon(icon),
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
 }
 
-//salons model class
-class Salons {
-  String image;
-  String name;
-  double rating;
-  String description;
+class ShimmerWidget extends StatelessWidget {
+  final double width;
+  final double height;
+  final ShapeBorder shapeBorder;
 
-  Salons(this.image, this.name, this.rating, this.description);
+  const ShimmerWidget.rectangular({required this.width, required this.height})
+      : this.shapeBorder = const RoundedRectangleBorder();
+
+  //const ShimmerSalonCard({Key? key}) : super(key: key);
+
+  const ShimmerWidget.circular(
+      {required this.width,
+      required this.height,
+      this.shapeBorder = const CircleBorder()});
+
+  //const ShimmerSalonCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+        baseColor: Colors.grey[400]!,
+        highlightColor: Colors.grey.shade100,
+        child: Container(
+          height: height,
+          width: width,
+          decoration:
+              ShapeDecoration(color: Colors.grey[400]!, shape: shapeBorder),
+        ));
+  }
 }
 
-Widget SalonCards(String image, String name, double rating, String description,
-    BuildContext context) {
-  return Container(
-    width: 250,
-    height: 170,
-    child: GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (contex) {
-          return const AboutShop();
-        }));
-      },
-      child: Card(
-          elevation: 5,
+Widget SalonCard(String image, String name, double rating, String description,
+        BuildContext context, bool isLoading) =>
+    SizedBox(
+        height: 120,
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: Card(
+          elevation: 6,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: Column(
+          child: Row(
             children: [
               Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                            image,
-                          ),
-                          fit: BoxFit.cover))),
-              ListTile(
-                title: Row(
-                  children: [
-                    Text(name),
-                    Spacer(),
-                    Text(rating.toString(), textAlign: TextAlign.end),
-                    Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    )
-                  ],
+                height: 110,
+                width: 110,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10)),
                 ),
-                subtitle: Text(description),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomLeft: Radius.circular(10)),
+                  child: Image.network(
+                    image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 110,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(name, style: TextStyle(fontSize: 15)),
+                        subtitle: Text(description, style: TextStyle(fontSize: 12)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: Wrap(children: [
+                          Text(rating.toString(), textAlign: TextAlign.end),
+                          Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          )
+                        ]),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ],
-          )),
-    ),
-  );
-}
+          ),
+        ));

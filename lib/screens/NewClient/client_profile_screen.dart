@@ -1,93 +1,385 @@
-import 'package:flutter/material.dart';
+//This page contains information
+//relating to a client's profile
 
-class Profile extends StatefulWidget {
-  const Profile({ Key? key }) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+class ClientProfile extends StatefulWidget {
+  const ClientProfile({Key? key}) : super(key: key);
 
   @override
-  ProfileState createState() => ProfileState();
+  _ClientProfileState createState() => _ClientProfileState();
 }
 
-class ProfileState extends State<Profile> {
+class _ClientProfileState extends State<ClientProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Container(
-                  height:MediaQuery.of(context).size.height*0.2,
-                  width:MediaQuery.of(context).size.width,
-                  decoration:BoxDecoration(
-                    color: Colors.blue
-                     // image: DecorationImage(image: AssetImage("images/nicesalon.jpg", ),fit:BoxFit.cover )
-                  )
-              ),
-              Container(
-                height:MediaQuery.of(context).size.height*0.7,
-                color: Colors.white,
-                child: Column(
-                    children:[
-                      SizedBox(
-                          height:40
-                      ),
-                      ListTile(
-                        title: Center(child: Text("Steve wonder",style: TextStyle(fontWeight:FontWeight.bold) )),
-                        subtitle: Center(child: Text("0552489087")),
-                        isThreeLine: true,
-                      ),
-                      // SizedBox(
-                      //     height:50,
-                      //     child:Row(
-                      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //         children:[
-                      //           IconButton(onPressed: (){}, icon: Icon(Icons.phone,size:35)),
-                      //           IconButton(onPressed: (){}, icon: Icon(Icons.message,size:35)),
-                      //           IconButton(onPressed: (){}, icon: Icon(Icons.video_call,size:35)),
-                      //           IconButton(onPressed: (){}, icon: Icon(Icons.share,size:35)),
-                      //
-                      //
-                      //         ]
-                      //     )
-                      // ),
-                      // SizedBox(
-                      //     height: 600,
-                      //     child:BarberHome()
-                      // )
-
-                    ]
-                ),
-              )
-
-            ],
-
-
-          ),
-
-          Align(
-            alignment:Alignment.topCenter,
+        body: ListView(
+      padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            height: 150,
             child: Column(
               children: [
                 SizedBox(
-                    height: MediaQuery.of(context).size.height*0.2-45
+                  height: 50,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Container(
-                    decoration:BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color:Colors.green,
-                    ),
+                Row(children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30, right: 15, top: 5),
                     child: SizedBox(
                       height: 90,
-                      width:90,
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage("images/nicesalon.jpg") ,
+                      width: 90,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 3.0),
+                            borderRadius: BorderRadius.circular(100),
+                            image: DecorationImage(
+                                image: AssetImage(
+                                  "images/salon.jpg",
+                                ),
+                                fit: BoxFit.cover)),
                       ),
                     ),
                   ),
-                ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        ListTile(
+                            title: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Doe Roberts"),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("027130202"),
+                            ),
+                            trailing: IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (builder) => EditProfile()));
+                                },
+                                icon: Icon(Icons.edit))
+                                ),
+
+                                Text("robertdoe60@gmail.com")
+                      ],
+                    ),
+                  )
+                ]),
               ],
+            ),
+          ),
+        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 40),
+        //   child: Text("Interests"),
+        // ),
+        // Padding(
+        //   padding: const EdgeInsets.all(15.0),
+        //   child: SizedBox(
+        //     height: 70,
+        //     child: ListView(scrollDirection: Axis.horizontal, children: [
+        //       Padding(
+        //         padding: const EdgeInsets.all(8.0),
+        //         child: Chip(
+        //           padding: EdgeInsets.all(6),
+        //           labelPadding: EdgeInsets.all(4),
+        //           labelStyle:
+        //               TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+        //           label: Text("Barbering"),
+        //           avatar: Icon(Icons.face),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.all(8.0),
+        //         child: Chip(
+        //           padding: EdgeInsets.all(6),
+        //           labelPadding: EdgeInsets.all(4),
+        //           labelStyle:
+        //               TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+        //           label: Text("Salon"),
+        //           avatar: Icon(Icons.face),
+        //         ),
+        //       ),
+        //       Padding(
+        //         padding: const EdgeInsets.all(8.0),
+        //         child: Chip(
+        //           padding: EdgeInsets.all(6),
+        //           labelPadding: EdgeInsets.all(4),
+        //           labelStyle:
+        //               TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+        //           label: Text("Hair coloring"),
+        //           avatar: Icon(Icons.face),
+        //         ),
+        //       )
+        //     ]),
+        //   ),
+        // ),
+        SizedBox(
+          height: 100,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 40),
+          child: Text(
+            "Dashboard",
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+        ),
+        ListView(
+          shrinkWrap: true,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: SizedBox(
+                  height: 70,
+                  width: 70,
+                  child: CircleAvatar(
+                      backgroundColor: Colors.red[200],
+                      child: Icon(Icons.payments, color: Colors.white)),
+                ),
+                title: Text(
+                  "Payments",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                trailing: SizedBox(
+                  width: 80,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Colors.lightBlue,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child:
+                          Text("View", style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: SizedBox(
+                  height: 70,
+                  width: 70,
+                  child: CircleAvatar(
+                      backgroundColor: Colors.amber,
+                      child: Icon(Icons.notifications, color: Colors.white)),
+                ),
+                title: Text(
+                  "Appointments",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                trailing: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: Colors.lightBlue,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text("5", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: SizedBox(
+                  height: 70,
+                  width: 70,
+                  child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child: Icon(Icons.history, color: Colors.white)),
+                ),
+                title: Text("History",
+                    style:
+                        TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                trailing: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: Colors.lightBlue,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child:
+                        Text("Se all", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 40,top: 5),
+          child: Text("My Account", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              tileColor: Colors.lightBlue[50],
+                title: TextButton(onPressed: () {}, child: Text("Sign Out"))),
+          ),
+        )
+      ],
+    ));
+  }
+}
+
+class EditProfile extends StatefulWidget {
+  const EditProfile({Key? key}) : super(key: key);
+
+  @override
+  _EditProfileState createState() => _EditProfileState();
+}
+
+class _EditProfileState extends State<EditProfile> {
+  String name = "Name", mail = "a@gmail.com", phone = "0271302702";
+  TextEditingController editname = TextEditingController();
+  TextEditingController editmail = TextEditingController();
+  TextEditingController editphone = TextEditingController();
+
+  void initState() {
+    super.initState();
+
+    editname.addListener(() {
+      editname.text = name;
+    });
+    editmail.addListener(() {
+      editmail.text = mail;
+    });
+    editphone.addListener(() {
+      editphone.text = phone;
+    });
+
+    editname.text = name;
+    editmail.text = mail;
+    editphone.text = phone;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Edit Profile"),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back)),
+      ),
+      
+      body: Column(
+        children: [
+          //Top container
+          SizedBox(height: 60),
+          Stack(
+            children: [
+              SizedBox(
+                height: 100,
+                width: 100,
+                child: CircleAvatar(
+                  child: Text("E"),
+                ),
+              ),
+              Positioned(
+                  right: 5,
+                  bottom: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child:  IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.camera_enhance, size: 40
+                          ),
+                    ),
+                  ))
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text("Name"),
+              subtitle: TextField(
+                onSubmitted: (newname) {
+                    setState(() {
+                      name = newname;
+                    });
+                  },
+                  controller: editname,
+                  autofocus: true,
+                  decoration: InputDecoration()),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text("Email"),
+              subtitle: TextField(
+                  onSubmitted: (newmail) {
+                    setState(() {
+                      mail = newmail;
+                    });
+                  },
+                  controller: editname,
+                  autofocus: true,
+                  decoration: InputDecoration()),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text("Phone"),
+              subtitle: TextField(
+                  onSubmitted: (newphone) {
+                    setState(() {
+                      phone = newphone;
+                    });
+                  },
+                  controller: editname,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                  
+                  )),
+                  
+            ),
+          ),
+
+          SizedBox(
+            height: 20,
+
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+               height: 50,
+                          width: MediaQuery.of(context).size.width*0.4,
+                          child: ElevatedButton(
+                              onPressed: () {
+                               
+                              },
+                              child: Text("Save ")),
             ),
           )
         ],
@@ -95,219 +387,3 @@ class ProfileState extends State<Profile> {
     );
   }
 }
-
-
-//shop info tabs
-class BarberHome extends StatefulWidget {
-  const BarberHome({Key? key}) : super(key: key);
-
-  @override
-  _BarberHomeState createState() => _BarberHomeState();
-}
-
-class _BarberHomeState extends State<BarberHome> with TickerProviderStateMixin {
-  // int initial = 0;
-  // TabController tabController =
-  //     TabController(
-  //       initialIndex: 0,
-  //       length: 4, vsync: );
-
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(50),
-            child: AppBar(
-              titleSpacing: 0,
-              backgroundColor: Colors.white,
-              elevation: 6,
-              bottom: TabBar(
-                indicatorColor: Colors.green,
-                labelStyle: TextStyle(color: Colors.green),
-                unselectedLabelColor: Colors.black,
-                labelColor: Colors.green,
-                tabs: [
-                  Tab(
-                    text: "Basic Info",
-                  ),
-                  Tab(
-                    text: "Portfolio",
-                  ),
-
-                  Tab(
-                    text: "Review",
-                  ),
-                ],
-              ),
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              About(context),
-
-              Gallery(context),
-              Review(context)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Widget About(BuildContext context) {
-  return SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("About"),
-        ),
-        Text(
-            "Best street salon and shop is a unisex salon that offers services of all kinds"),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Opening hours"),
-        ),
-        ListTile(
-            title: Row(
-              children: [
-                Text("Monday - Friday"),
-                Spacer(),
-                Text("8am - 4pm"),
-              ],
-            )),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Address"),
-        ),
-        ListTile(
-          title: Text("Obuasi mangoase"),
-          subtitle: Text("You can locate our shop at obuasi off mangoase road"),
-        )
-      ],
-    ),
-  );
-}
-
-
-
-Widget Gallery(BuildContext context) {
-  return SingleChildScrollView(
-    child: MediaQuery.removePadding(
-      context:context,
-      removeTop:true,
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height*9.8,
-        child: GridView.builder(
-            itemCount: 7,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing:2,
-                mainAxisSpacing: 2
-            ),
-            itemBuilder: (context, photos) {
-              return Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(image: AssetImage("images/manshaving.jpg"),fit: BoxFit.cover)
-
-                ),
-                height: 150,
-                child:Text("Nice fade"),
-              );
-            }),
-      ),
-    ),
-  );
-}
-
-
-Widget chatCard(String img, String name, String date, String time,String message) {
-  return ListTile(
-      tileColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      leading: DecoratedBox(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.amber)),
-          child: CircleAvatar(
-            backgroundImage: AssetImage(img),
-          )),
-      title: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Text(name),
-            Spacer(),
-            Text(time),
-          ],
-        ),
-      ),
-      subtitle: Container(
-        height: 20,
-        child: Row(children: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border,
-                  color: Colors.yellow)),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border,
-                  color: Colors.yellow)),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border,
-                  color: Colors.yellow)),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border,
-              )),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border,
-              )),
-        ]),
-      ));
-}
-
-Widget Review(BuildContext context) {
-  return SingleChildScrollView(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-
-        ListView.builder(
-          shrinkWrap:true,
-          itemCount: items.length,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          itemBuilder: (BuildContext context, int index) {
-            return ListView(
-              shrinkWrap:true,
-              children: [
-                chatCard(items[index]["img"] ,items[index]["name"], items[index]["date"], items[index]["time"],
-                    items[index]["message"]),
-                Text("This cut was pretty cool for me")
-              ],
-            );
-          },
-        ),
-
-      ],
-    ),
-  );
-}
-
-List items = [{"img":"images/nicesalon.jpg","name":"Kay","date":"20th Oct","time":"12:00 pm","message":"Hello"},
-  {"img":"images/salon.jpg","name":"Joe","date":"20th Oct","time":"12:00 pm","message":"Are you there?"},
-];
