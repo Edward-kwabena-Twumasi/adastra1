@@ -148,18 +148,18 @@ Widget AppointmentCard(BuildContext context, Map<String, dynamic> appointment) {
   if (appointment["service_status"] == "PENDING") {
     badge = Badge(
       toAnimate: false,
-      badgeColor: Colors.amber,
+      badgeColor: Colors.amber.shade50,
       shape: BadgeShape.square,
       borderRadius: BorderRadius.circular(10),
-      badgeContent:Text("pending")
+      badgeContent:Text(appointment["service_status"],style: TextStyle(color: Colors.amber,fontSize: 10,fontWeight:FontWeight.bold))
     );
   } else if (appointment["service_status"] == "CONFIRMED") {
     badge = Badge(
       toAnimate: false,
-      badgeColor: Colors.green,
+      badgeColor: Colors.green.shade50,
       shape: BadgeShape.square,
       borderRadius: BorderRadius.circular(10),
-      badgeContent:Text("confirmed")
+      badgeContent:Text(appointment["service_status"],style: TextStyle(color: Colors.green,fontSize: 10,fontWeight:FontWeight.bold),)
     );
   } else  {
     badge = Badge(
@@ -167,7 +167,7 @@ Widget AppointmentCard(BuildContext context, Map<String, dynamic> appointment) {
       badgeColor: Colors.black.withOpacity(0.7),
       shape: BadgeShape.square,
       borderRadius: BorderRadius.circular(10),
-      badgeContent:Text("completed")
+      badgeContent:Text(appointment["service_status"],style: TextStyle(color: Colors.green,fontSize: 10,fontWeight:FontWeight.bold))
     );
   }
 

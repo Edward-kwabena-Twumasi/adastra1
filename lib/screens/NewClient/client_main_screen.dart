@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:thecut/providers/provider.dart';
 
@@ -102,7 +103,7 @@ class _ClintMainScreenState extends State<ClientMainScreen> {
                     BottomNavigationBarItem(
                         icon: Icon(Icons.place), label: "Near by"),
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.inbox), label: "Saved"),
+                        icon: Icon(FontAwesomeIcons.save), label: "Saved"),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.history), label: "Appointments"),
                   ]),

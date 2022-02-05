@@ -61,14 +61,12 @@ class PerformSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-
     // final appProv = Provider.of<ApplicationProvider>(context, listen: false);
     // appProv.addQuery(query);
-    if (!query.isEmpty)
-     {
+    if (!query.isEmpty) {
       if (!recentsquery.contains(query)) {
-      recentsquery.add(query);
-    }
+        recentsquery.add(query);
+      }
     }
     // TODO: implement buildResults
     return query.isEmpty
@@ -93,27 +91,18 @@ class PerformSearch extends SearchDelegate {
                               .toString()
                               .toLowerCase()
                               .contains(query.toLowerCase())
-                          ? Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  close(context, shops[index]["name"]);
-                                  if (!recentsquery.contains(query)) {
-                                    recentsquery.add(query);
-                                  }
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (contex) {
-                                    return AboutShop(
-                                        shopId: shops[index]["uid"]);
-                                  }));
-                                },
-                                child: SalonCards(
-                                    "images/barbershop.jpg",
-                                    shops[index]["name"],
-                                    3.2,
-                                    shops[index]["phone"],
-                                    context),
-                              ),
+                          ? GestureDetector(
+                              onTap: () {
+                                close(context, shops[index]["name"]);
+                                if (!recentsquery.contains(query)) {
+                                  recentsquery.add(query);
+                                }
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (contex) {
+                                  return AboutShop(shopId: shops[index]["uid"]);
+                                }));
+                              },
+                              child: SalonCards(shops[index], context),
                             )
                           : SizedBox(
                               height: 0,
@@ -148,12 +137,7 @@ class PerformSearch extends SearchDelegate {
                             return AboutShop(shopId: shops[index]["uid"]);
                           }));
                         },
-                        child: SalonCards(
-                            "images/barbershop.jpg",
-                            shops[index]["name"],
-                            3.2,
-                            shops[index]["phone"],
-                            context),
+                        child: SalonCards(shops[index], context),
                       ),
                     )
                   : SizedBox(
@@ -177,12 +161,7 @@ class PerformSearch extends SearchDelegate {
                               return AboutShop(shopId: shops[index]["uid"]);
                             }));
                           },
-                          child: SalonCards(
-                              "images/barbershop.jpg",
-                              shops[index]["name"],
-                              3.2,
-                              shops[index]["landmark"],
-                              context),
+                          child: SalonCards(shops[index], context),
                         ),
                       );
                     }),
@@ -192,44 +171,55 @@ class PerformSearch extends SearchDelegate {
   }
 }
 
-Widget SalonCards(String image, String name, double rating, String description,
-    BuildContext context) {
-  return SizedBox(
-      height: 81,
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          children: [
-            Container(
-                height: 80,
-                width: 50,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                        image: AssetImage(
-                          image,
-                        ),
-                        fit: BoxFit.cover))),
-            Expanded(
-              child: ListTile(
-                title: Row(
+Widget SalonCards(Map<String, dynamic> shop, BuildContext context) {
+  String defaultshopImage = "https://media.istockphoto.com/photos/hair-beauty-salon-picture-id1341429602?b=1&k=20&m=1341429602&s=170667a&w=0&h=996IdyjbO3EO1HXiobW382SLiDlJ8zYqOZxzKw17U7U=";
+  return Card(
+    elevation: 5,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            height: 95,
+            width: 90,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10)),
+                image: DecorationImage(
+                    image: NetworkImage(
+                      shop["photo_url"] == ""
+                          ? 
+                           defaultshopImage:shop["photo_url"],
+                    ),
+                    fit: BoxFit.cover))),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                title: Text(shop["name"]),
+                subtitle: Text(shop["landmark"]),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Wrap(
                   children: [
-                    Text(name),
-                    Spacer(),
-                    Text(rating.toString(), textAlign: TextAlign.end),
+                    Text("1", textAlign: TextAlign.end),
                     Icon(
                       Icons.star,
                       color: Colors.amber,
                     )
                   ],
                 ),
-                subtitle: Text(description),
-              ),
-            ),
-          ],
+              )
+            ],
+          ),
         ),
-      ));
+      ],
+    ),
+  );
 }
 
 //salon class

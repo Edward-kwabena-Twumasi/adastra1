@@ -309,8 +309,7 @@ width: MediaQuery.of(context).size.width-8,
                           MaterialPageRoute(builder: (ctx) {
                             return AboutShop(shopId: shops[index]["uid"]);
                           }));
-                    },child:SalonCard("https://d2zdpiztbgorvt.cloudfront.net/region1/us/270012/biz_photo/7d1a76a087e84fa4b4e0ca73120aa8-Alphas-Cutz-biz-photo-e14e8d52566246d6a3a2e3ac578893-booksy.jpeg?size=640x427", shops[index]["name"],
-                      ( index%5).toDouble(), shops[index]["landmark"], context, isLoading));
+                    },child:SalonCard( shops[index], context, isLoading));
                   }),
               /* ),*/
             )
@@ -401,9 +400,11 @@ class ShimmerWidget extends StatelessWidget {
   }
 }
 
-Widget SalonCard(String image, String name, double rating, String description,
-        BuildContext context, bool isLoading) =>
-    SizedBox(
+Widget SalonCard(Map<String, dynamic> shop,
+        BuildContext context, bool isLoading) {
+            String defaultshopImage = "https://media.istockphoto.com/photos/hair-beauty-salon-picture-id1341429602?b=1&k=20&m=1341429602&s=170667a&w=0&h=996IdyjbO3EO1HXiobW382SLiDlJ8zYqOZxzKw17U7U=";
+
+   return SizedBox(
         height: 120,
         width: MediaQuery.of(context).size.width * 0.9,
         child: Card(
@@ -416,20 +417,20 @@ Widget SalonCard(String image, String name, double rating, String description,
                 height: 110,
                 width: 110,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10)),
-                ),
-                child: ClipRRect(
+                 
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(10),
                       bottomLeft: Radius.circular(10)),
-                  child: Image.network(
-                    image,
-                    fit: BoxFit.cover,
+                
+                image:DecorationImage(image: NetworkImage(
+                    shop["photo_url"] == ""
+                        ? 
+                         defaultshopImage:shop["photo_url"],
                   ),
-                ),
+                  fit: BoxFit.cover
+                  ),
+                  
+                  ),
               ),
               Expanded(
                 child: SizedBox(
@@ -439,13 +440,13 @@ Widget SalonCard(String image, String name, double rating, String description,
                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListTile(
-                        title: Text(name, style: TextStyle(fontSize: 15)),
-                        subtitle: Text(description, style: TextStyle(fontSize: 12)),
+                        title: Text(shop["name"], style: TextStyle(fontSize: 15)),
+                        subtitle: Text(shop["landmark"], style: TextStyle(fontSize: 12)),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0),
                         child: Wrap(children: [
-                          Text(rating.toString(), textAlign: TextAlign.end),
+                          Text("3", textAlign: TextAlign.end),
                           Icon(
                             Icons.star,
                             color: Colors.amber,
@@ -458,4 +459,4 @@ Widget SalonCard(String image, String name, double rating, String description,
               ),
             ],
           ),
-        ));
+        ));}

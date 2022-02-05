@@ -26,11 +26,18 @@ class _ClientSavedState extends State<ClientSaved> {
      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 28
+          Container(
+            color: Colors.black,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.menu,color: Colors.white,),
+                  Text('Appointments',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                  Text('   ')
+                ],
+              ),
             ),
-            child: Text("Saved shops",style:TextStyle(fontWeight:FontWeight.bold,fontSize: 20 )),
           ),
           getProvider().userDetails["favorites"].length<1? SizedBox(
            height:100,
@@ -42,19 +49,16 @@ class _ClientSavedState extends State<ClientSaved> {
             shrinkWrap: true,
               itemCount: getProvider().userDetails["favorites"].length,
               itemBuilder: (context,index){
-           return Card(
-             elevation: 4,
-             child: ListTile(
-               onTap: (){
-                 Navigator.push(context,
-                     MaterialPageRoute(builder: (ctx) {
-                       return AboutShop(shopId: getProvider().userDetails["favorites"][index]["shop_id"]);
-                     }));
-               }
-               ,
-               trailing: IconButton(onPressed: (){}, icon: Icon(Icons.cancel,color: Colors.black,)),
-               title: Text(getProvider().userDetails["favorites"][index]["name"]),
-             ),
+           return ListTile(
+             onTap: (){
+               Navigator.push(context,
+                   MaterialPageRoute(builder: (ctx) {
+                     return AboutShop(shopId: getProvider().userDetails["favorites"][index]["shop_id"]);
+                   }));
+             }
+             ,
+             trailing: IconButton(onPressed: (){}, icon: Icon(Icons.cancel,color: Colors.black,)),
+             title: Text(getProvider().userDetails["favorites"][index]["name"]),
            );
           })
       ],
